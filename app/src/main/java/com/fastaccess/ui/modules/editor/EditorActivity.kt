@@ -41,7 +41,7 @@ class EditorActivity : BaseActivity<EditorMvp.View, EditorPresenter>(), EditorMv
     private val sentFromFastHub: String by lazy {
         "\n\n_" + getString(
             R.string.sent_from_fasthub, AppHelper.getDeviceName(), "",
-            "[" + getString(R.string.app_name) + "](https://play.google.com/store/apps/details?id=com.fastaccess.github)"
+            "[" + getString(R.string.app_name) + "](https://github.com/thermatk/FastHub-Libre/)"
         ) + "_"
     }
 

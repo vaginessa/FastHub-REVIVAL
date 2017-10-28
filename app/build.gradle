@@ -27,7 +27,7 @@ android {
     }
     compileSdkVersion 29
     defaultConfig {
-        applicationId "com.fastaccess.github"
+        applicationId "com.fastaccess.github.libre"
         minSdkVersion 21
         targetSdkVersion 29
         versionCode 473
