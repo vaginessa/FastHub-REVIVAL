@@ -17,7 +17,6 @@ import androidx.appcompat.widget.AppCompatTextView;
 import android.util.AttributeSet;
 import android.view.Gravity;
 
-import com.crashlytics.android.Crashlytics;
 import com.evernote.android.state.State;
 import com.evernote.android.state.StateSaver;
 import com.fastaccess.R;
@@ -65,7 +64,6 @@ public class FontTextView extends AppCompatTextView {
         try {
             super.setTextCursorDrawable(textCursorDrawable);
         } catch (Exception e) {
-            Crashlytics.logException(e);
         }
     }
 
@@ -73,7 +71,6 @@ public class FontTextView extends AppCompatTextView {
         try {
             super.setTextCursorDrawable(textCursorDrawable);
         } catch (Exception e) {
-            Crashlytics.logException(e);
         }
     }
 

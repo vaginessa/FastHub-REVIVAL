@@ -14,13 +14,9 @@ import butterknife.BindView
 import butterknife.OnClick
 import com.fastaccess.BuildConfig
 import com.fastaccess.R
-import com.fastaccess.helper.AppHelper
-import com.fastaccess.helper.Logger
-import com.fastaccess.helper.RxHelper
+import com.fastaccess.helper.*
 import com.fastaccess.ui.base.BaseActivity
 import com.fastaccess.ui.modules.main.donation.DonateActivity
-import com.miguelbcr.io.rx_billing_service.RxBillingService
-import com.miguelbcr.io.rx_billing_service.entities.ProductType
 import io.reactivex.Observable
 import io.reactivex.disposables.Disposable
 
