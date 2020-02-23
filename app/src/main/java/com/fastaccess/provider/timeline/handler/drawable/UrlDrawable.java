@@ -8,7 +8,6 @@ import android.graphics.drawable.Drawable;
 import androidx.annotation.NonNull;
 
 import com.bumptech.glide.load.resource.gif.GifDrawable;
-import com.crashlytics.android.Crashlytics;
 
 class UrlDrawable extends BitmapDrawable implements Drawable.Callback {
     private Drawable drawable;
@@ -20,7 +19,6 @@ class UrlDrawable extends BitmapDrawable implements Drawable.Callback {
             try {
                 drawable.draw(canvas);
             } catch (Exception e) {
-                Crashlytics.logException(e);
                 e.printStackTrace();
             }
             if (drawable instanceof GifDrawable) {

@@ -26,7 +26,6 @@ import com.fastaccess.ui.modules.notification.NotificationActivity;
 import com.fastaccess.ui.modules.search.SearchActivity;
 import com.fastaccess.ui.modules.user.UserPagerActivity;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.firebase.iid.FirebaseInstanceId;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -69,10 +68,6 @@ public class MainActivity extends BaseActivity<MainMvp.View, MainPresenter> impl
 
     @Override protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        if (BuildConfig.DEBUG) {
-            FirebaseInstanceId.getInstance().getInstanceId().addOnSuccessListener(o -> Logger.e(o.getId(), o.getToken()));
-        }
 
         getPresenter().setEnterprise(PrefGetter.isEnterprise());
         selectHome(false);

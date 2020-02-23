@@ -8,7 +8,6 @@ import android.net.Uri;
 import android.os.Environment;
 import android.text.TextUtils;
 
-import com.crashlytics.android.Crashlytics;
 import com.fastaccess.BuildConfig;
 import com.fastaccess.R;
 import com.fastaccess.data.dao.GitHubErrorResponse;
@@ -129,7 +128,6 @@ public class RestProvider {
             }
         } catch (Exception e) {
             e.printStackTrace();
-            Crashlytics.logException(e);
         }
     }
 
