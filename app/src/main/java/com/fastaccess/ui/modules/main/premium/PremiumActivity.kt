@@ -47,8 +47,6 @@ class PremiumActivity : BaseActivity<PremiumMvp.View, BasePresenter<PremiumMvp.V
         successResult()
     }
 
-    @OnClick(R.id.close) fun onClose() = finish()
-
     @OnClick(R.id.five) fun onShowUpstreamSupport() {
         startActivity(RepoPagerActivity.createIntent(this, "FastHub", "k0shk0sh"))
     }
