@@ -10,8 +10,6 @@ import com.fastaccess.helper.BundleConstant
 import com.fastaccess.helper.RxHelper
 import com.fastaccess.provider.rest.jsoup.JsoupProvider
 import com.fastaccess.ui.base.mvp.presenter.BasePresenter
-import com.github.b3er.rxfirebase.database.RxFirebaseDatabase
-import com.google.firebase.database.FirebaseDatabase
 import io.reactivex.Observable
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
@@ -25,7 +23,6 @@ class WikiPresenter : BasePresenter<WikiMvp.View>(), WikiMvp.Presenter {
 
     @com.evernote.android.state.State var repoId: String? = null
     @com.evernote.android.state.State var login: String? = null
-    private var firebaseWikiConfigModel: FirebaseWikiConfigModel? = null
 
     override fun onActivityCreated(intent: Intent?) {
         if (intent != null) {
@@ -43,22 +40,6 @@ class WikiPresenter : BasePresenter<WikiMvp.View>(), WikiMvp.Presenter {
     }
 
     override fun onSidebarClicked(sidebar: WikiSideBarModel) {
-        if (firebaseWikiConfigModel == null) {
-            manageDisposable(
-                RxHelper.getSingle(RxFirebaseDatabase.data(FirebaseDatabase.getInstance().reference.child("github_wiki")))
-                    .doOnSubscribe { sendToView { it.showProgress(0) } }
-                    .map {
-                        firebaseWikiConfigModel = FirebaseWikiConfigModel.map(it.value as? HashMap<String, String>)
-                        return@map firebaseWikiConfigModel
-                    }
-                    .subscribe(
-                        { callApi(sidebar) },
-                        { callApi(sidebar) }
-                    )
-            )
-        } else {
-            callApi(sidebar)
-        }
     }
 
     private fun callApi(sidebar: WikiSideBarModel) {
@@ -84,29 +65,7 @@ class WikiPresenter : BasePresenter<WikiMvp.View>(), WikiMvp.Presenter {
     private fun getWikiContent(body: String?): Observable<WikiContentModel> {
         return Observable.fromPublisher { s ->
             val document: Document = Jsoup.parse(body, "")
-            val firebaseWikiConfigModel = firebaseWikiConfigModel ?: kotlin.run {
-                s.onNext(WikiContentModel("<h2 align='center'>No Wiki</h4>", "", arrayListOf()))
-                s.onComplete()
-                return@fromPublisher
-            }
-            val wikiWrapper = document.select(firebaseWikiConfigModel.wikiWrapper)
-            if (!wikiWrapper.isNullOrEmpty()) {
-                val header = wikiWrapper.select(firebaseWikiConfigModel.wikiHeader)?.text()
-                val subHeaderText = wikiWrapper.select(firebaseWikiConfigModel.wikiSubHeader)?.text()
-                val wikiContent = wikiWrapper.select(firebaseWikiConfigModel.wikiContent)
-                val wikiBody = wikiContent?.select(firebaseWikiConfigModel.wikiBody)?.html()
-                val rightBarList = wikiContent?.select(firebaseWikiConfigModel.sideBarUl)?.select(firebaseWikiConfigModel.sideBarList)
-                val headerHtml = "<div class='gh-header-meta'><h1>$header</h1><p>$subHeaderText</p></div>"
-                val content = "$headerHtml $wikiBody"
-                s.onNext(WikiContentModel(content, null, rightBarList?.map {
-                    WikiSideBarModel(
-                        it.select(firebaseWikiConfigModel.sideBarListTitle).text(),
-                        it.select(firebaseWikiConfigModel.sideBarListTitle).attr(firebaseWikiConfigModel.sideBarListLink)
-                    )
-                } ?: listOf()))
-            } else {
-                s.onNext(WikiContentModel("<h2 align='center'>No Wiki</h4>", "", arrayListOf()))
-            }
+            s.onNext(WikiContentModel("<h2 align='center'>Wiki in app not supported</h4>", "", arrayListOf()))
 
             s.onComplete()
         }

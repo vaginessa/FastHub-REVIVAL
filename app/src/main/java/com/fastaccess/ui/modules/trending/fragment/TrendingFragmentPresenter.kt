@@ -8,8 +8,6 @@ import com.fastaccess.helper.RxHelper
 import com.fastaccess.provider.rest.jsoup.JsoupProvider
 import com.fastaccess.ui.base.mvp.presenter.BasePresenter
 import com.fastaccess.ui.modules.repos.RepoPagerActivity
-import com.github.b3er.rxfirebase.database.RxFirebaseDatabase
-import com.google.firebase.database.FirebaseDatabase
 import io.reactivex.Observable
 import io.reactivex.disposables.Disposable
 import org.jsoup.Jsoup
@@ -25,7 +23,6 @@ class TrendingFragmentPresenter : BasePresenter<TrendingFragmentMvp.View>(), Tre
     private var disposel: Disposable? = null
 
     private val trendingList: ArrayList<TrendingModel> = ArrayList()
-    private var firebaseTrendingConfigModel: FirebaseTrendingConfigModel? = null
 
     override fun getTendingList(): ArrayList<TrendingModel> {
         return trendingList
@@ -40,48 +37,14 @@ class TrendingFragmentPresenter : BasePresenter<TrendingFragmentMvp.View>(), Tre
 
     override fun onCallApi(lang: String, since: String) {
         disposel?.let { if (!it.isDisposed) it.dispose() }
-        val config = firebaseTrendingConfigModel
-
-        if (config == null) {
-            manageDisposable(RxHelper.getSingle(RxFirebaseDatabase.data(FirebaseDatabase.getInstance().reference.child("github_trending")))
-                .doOnSubscribe { sendToView { it.showProgress(0) } }
-                .map {
-                    firebaseTrendingConfigModel = FirebaseTrendingConfigModel
-                        .map(it.value as? HashMap<String, String>)
-                    return@map firebaseTrendingConfigModel
-                }
-                .subscribe(
-                    { callApi(lang, since) },
-                    { callApi(lang, since) }
-                )
-            )
-        } else {
-            callApi(lang, since)
-        }
     }
 
     private fun callApi(
         lang: String,
         since: String
     ) {
-        val model = firebaseTrendingConfigModel ?: FirebaseTrendingConfigModel()
 
         val language = if (lang == "All") "" else lang.replace(" ", "_").toLowerCase(Locale.getDefault())
-
-        disposel = RxHelper.getObservable(JsoupProvider.getTrendingService(model.pathUrl).getTrending(language, since))
-            .doOnSubscribe {
-                sendToView {
-                    it.showProgress(0)
-                    it.clearAdapter()
-                }
-            }.flatMap {
-                RxHelper.getObservable(getTrendingObservable(it.body() ?: "", model))
-            }.subscribe(
-                { response -> sendToView { view -> view.onNotifyAdapter(response) } },
-                { throwable -> onError(throwable) },
-                { sendToView { it.hideProgress() } }
-            )
-        manageDisposable(disposel)
     }
 
 
