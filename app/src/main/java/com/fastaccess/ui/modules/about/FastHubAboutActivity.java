@@ -145,7 +145,7 @@ public class FastHubAboutActivity extends MaterialAboutActivity {
                 .addItem(new MaterialAboutActionItem.Builder()
                         .text(R.string.fork_github)
                         .icon(ContextCompat.getDrawable(context, R.drawable.ic_github))
-                        .setOnClickAction(() -> startActivity(RepoPagerActivity.createIntent(this, "FastHub-Libre", "thermatk")))
+                        .setOnClickAction(() -> startActivity(RepoPagerActivity.createIntent(this, "FastHub", "k0shk0sh")))
                         .build())
                 .addItem(ConvenienceBuilder.createEmailItem(context, ContextCompat.getDrawable(context, R.drawable.ic_email),
                         getString(R.string.send_email), true, getString(R.string.email_address), getString(R.string.question_concerning_fasthub)));
