@@ -145,8 +145,8 @@ public class CreateIssueActivity extends BaseActivity<CreateIssueMvp.View, Creat
     }
 
     @NonNull public static Intent startForResult(@NonNull Activity activity) {
-        String login = "thermatk"; // FIXME: 23/02/2017 hardcoded
-        String repoId = "FastHub-Libre";// FIXME: 23/02/2017 hardcoded
+        String login = "LightDestory"; // FIXME: 23/02/2017 hardcoded
+        String repoId = "FastHub-RE";// FIXME: 23/02/2017 hardcoded
         Intent intent = new Intent(activity, CreateIssueActivity.class);
         intent.putExtras(Bundler.start()
                 .put(BundleConstant.EXTRA, login)
@@ -282,7 +282,7 @@ public class CreateIssueActivity extends BaseActivity<CreateIssueMvp.View, Creat
             }
         }
         getPresenter().checkAuthority(login, repoId);
-        if (isFeedback || ("thermatk".equalsIgnoreCase(login) && repoId.equalsIgnoreCase("FastHub-Libre"))) {
+        if (isFeedback || ("LightDestory".equalsIgnoreCase(login) && repoId.equalsIgnoreCase("FastHub-RE"))) {
             Toasty.info(App.getInstance(), getString(R.string.report_issue_warning), Toast.LENGTH_LONG).show();
             setTitle(R.string.submit_feedback);
             getPresenter().onCheckAppVersion();

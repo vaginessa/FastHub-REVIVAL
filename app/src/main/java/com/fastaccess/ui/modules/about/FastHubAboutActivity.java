@@ -49,8 +49,8 @@ public class FastHubAboutActivity extends MaterialAboutActivity {
     @NonNull @Override protected MaterialAboutList getMaterialAboutList(@NonNull Context context) {
         MaterialAboutCard.Builder appCardBuilder = new MaterialAboutCard.Builder();
         buildApp(context, appCardBuilder);
-        MaterialAboutCard.Builder libreCardBuilder = new MaterialAboutCard.Builder();
-        buildLibre(context, libreCardBuilder);
+        MaterialAboutCard.Builder revivalCardBuilder = new MaterialAboutCard.Builder();
+        buildRevival(context, revivalCardBuilder);
         MaterialAboutCard.Builder miscCardBuilder = new MaterialAboutCard.Builder();
         buildMisc(context, miscCardBuilder);
         MaterialAboutCard.Builder authorCardBuilder = new MaterialAboutCard.Builder();
@@ -58,7 +58,7 @@ public class FastHubAboutActivity extends MaterialAboutActivity {
         MaterialAboutCard.Builder newLogoAuthor = new MaterialAboutCard.Builder();
         MaterialAboutCard.Builder logoAuthor = new MaterialAboutCard.Builder();
         buildLogo(context, newLogoAuthor, logoAuthor);
-        return new MaterialAboutList(appCardBuilder.build(), libreCardBuilder.build(), miscCardBuilder.build(), authorCardBuilder.build(),
+        return new MaterialAboutList(appCardBuilder.build(), revivalCardBuilder.build(), miscCardBuilder.build(), authorCardBuilder.build(),
                 newLogoAuthor.build(), logoAuthor.build());
     }
 
@@ -80,13 +80,13 @@ public class FastHubAboutActivity extends MaterialAboutActivity {
         return false;//override
     }
 
-    private void buildLibre(Context context, MaterialAboutCard.Builder libreCardBuilder) {
-        libreCardBuilder.title("FastHub-Libre")
+    private void buildRevival(Context context, MaterialAboutCard.Builder libreCardBuilder) {
+        libreCardBuilder.title("FastHub-Revival")
                 .addItem(new MaterialAboutActionItem.Builder()
-                        .text("A liberated fork")
-                        .subText("by thermatk")
+                        .text("Revival Attempt for FastHub the ultimate GitHub client for Android.")
+                        .subText("by the community")
                         .icon(ContextCompat.getDrawable(context, R.drawable.ic_github))
-                        .setOnClickAction(() -> startActivity(RepoPagerActivity.createIntent(this, "FastHub-Libre", "thermatk")))
+                        .setOnClickAction(() -> startActivity(RepoPagerActivity.createIntent(this, "FastHub-RE", "LightDestory")))
                         .build())
                 .addItem(new MaterialAboutActionItem.Builder()
                         .text("Unlock all features")
