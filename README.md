@@ -1,25 +1,16 @@
 [![License: GPL v3](https://img.shields.io/badge/License-GPL%20v3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
-[![Releases](https://img.shields.io/github/release/thermatk/FastHub-Libre.svg)](https://github.com/thermatk/FastHub-Libre/releases/latest)
+[![Releases](https://img.shields.io/github/release/LightDestory/FastHub-RE.svg)](https://github.com/LightDestory/FastHub-RE/releases/latest)
 
-[![Donate](https://liberapay.com/assets/widgets/donate.svg)](https://liberapay.com/thermatk/)
+# FastHub-RE(vival)
+<center><img src=".github/assets/web_hi_res_512.png" width=256 alt="Logo"></center>
 
+**This fork aim to attempt the revival of the aswesome FastHub application. The code base is based on a set of changes done on the original [FastHub repository](https://github.com/k0shk0sh/FastHub) by [thermatk](https://github.com/thermatk/FastHub-Libre)**. We can sum up these changes with:
 
-# FastHub-Libre
+  - Cleaned from blobs (Removed firebase dependencies and analystic stuff);
+  - Notifications works using native JobScheduler without any push messaging involved, although the minimum supported update interval becomes 20 minutes;
+  - It's possible to unlock premium features, if needed, in a manner which nudges to still try to find a way and support upstream developers. **Once again, please find a way to financially support upstream developers**.
 
-This is a foss-friendly fork of FastHub
-
-[<img src="https://f-droid.org/badge/get-it-on.png"
-      alt="Get it on F-Droid"
-      height="80">](https://f-droid.org/packages/com.fastaccess.github.libre)
-      
-## Changes
-- Cleaned from blobs
-- Notifications work using native JobScheduler without any push messaging involved, although the minimum supported update interval becomes 20 minutes
-- It's possible to unlock features, if needed, in a manner which nudges to still try to find a way and support upstream developers. **Once again, please find a way to financially support upstream developers**. If you, just as me, haven't found any other option than to use the in-app purchases in the upstream app, maybe do it from a friend's device!
-- Rebranded in some most obvious places to indicate that "FastHub-Libre" is not exactly "FastHub"
-- Ready to be built and included in the F-Droid store
-
-## Why fork and change these bits? (As of October 2017)
+The reasons behind the initial changes by thermatk are:
 
 - **Technical reasons**
   - Upstream developers will never be able to comply with the [F-Droid's inclusion policy](https://f-droid.org/docs/Inclusion_Policy/?title=Inclusion_Policy) 
@@ -32,15 +23,14 @@ This is a foss-friendly fork of FastHub
   	- This fork will have to carry on without approval until a better solution will surface
   	- The unlocking page and the way to this page is made respective and nudging to go and support
 
-![Logo](/.github/assets/feature_graphic.png?raw=true "Logo")
+__My project, FastHub-RE, tries to continue the awesome job of the original and currently unmaintained FastHub and the good intentions of FastHub-Libre.__ 
 
-# FastHub
-
-Yet another **open-source** GitHub client app but unlike any other app, FastHub was built from scratch.
+## Description
+Yet another **open-source** GitHub client app based on FastHub lookinf forward for newer features.
 
 ## Features  
 - **App**
-  - Three login types (Basic Auth), (Access Token) or via (OAuth)
+  - OAuth login feature, Basic Authentication and Access Token will be removed soon from the code base
   - Multiple Accounts
   - Enterprise Accounts
   - Themes mode
@@ -50,7 +40,7 @@ Yet another **open-source** GitHub client app but unlike any other app, FastHub 
   - Search Users/Orgs, Repos, Issues/PRs & Code.
   - FastHub & GitHub Pinned Repos
   - Trending
-  - Wiki
+  - Wiki, broken since thermatk, I will try to fix later
   - Projects
 - **Repositories**
   - Browse & Read Wiki
@@ -99,7 +89,7 @@ Yet another **open-source** GitHub client app but unlike any other app, FastHub 
   - Contribution graph.
   - Search Users, Repos, Issues,Pull Requests and Code
 - _**Much more...**_
-  - _FastHub is actively developed. More features will come!_
+  - _FastHub-RE will try to implements all the newest GitHub features!_
 
 ## Specs / Open-source libraries:
 
@@ -177,12 +167,12 @@ Yet another **open-source** GitHub client app but unlike any other app, FastHub 
 
 ## License
 
-Upstream:
+**Upstream: FastHub**:
 > Copyright (C) 2017 Kosh.  
 > Licensed under the [GPL-3.0](https://www.gnu.org/licenses/gpl.html) license.  
 > (See the [LICENSE](https://github.com/k0shk0sh/FastHub/blob/master/LICENSE) file for the whole license text.)
 
-Libre fork changes:
+**FastHub-Libre changes**:
 > Copyright (C) 2017 Ruslan Boitsov.
 > Licensed under the [GPL-3.0](https://www.gnu.org/licenses/gpl.html) license.
 
@@ -190,14 +180,17 @@ Libre fork changes:
 
 | Feeds | Drawer |
 |:-:|:-:|
-| ![First](/.github/assets/first.png?raw=true) | ![Sec](/.github/assets/sec.png?raw=true) |
+| <img src=".github/assets/first.png?raw=true">| <img src=".github/assets/sec.png?raw=true"> |
 
 | Repo | Profile |
 |:-:|:-:|
-| ![Third](/.github/assets/third.png?raw=true) | ![Fourth](/.github/assets/fourth.png?raw=true) |
+| <img src=".github/assets/third.png?raw=true"> | <img src=".github/assets/fourth.png?raw=true"> |
+
+
+## FastHub-RE Logo
+**FastHub-RE** logo is made by [Freepik](https://www.freepik.com) from <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a>.  
 
 ## FastHub Logo
-
 **FastHub** logo is designed by **Cookicons**.  
 [Twitter](https://twitter.com/mcookie)  
 Designer website [Cookicons](https://cookicons.co/).  
