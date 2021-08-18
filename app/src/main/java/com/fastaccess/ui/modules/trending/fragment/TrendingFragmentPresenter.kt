@@ -23,6 +23,7 @@ class TrendingFragmentPresenter : BasePresenter<TrendingFragmentMvp.View>(), Tre
     private var disposel: Disposable? = null
 
     private val trendingList: ArrayList<TrendingModel> = ArrayList()
+    private var firebaseTrendingConfigModel: FirebaseTrendingConfigModel? = null
 
     override fun getTendingList(): ArrayList<TrendingModel> {
         return trendingList
@@ -37,14 +38,31 @@ class TrendingFragmentPresenter : BasePresenter<TrendingFragmentMvp.View>(), Tre
 
     override fun onCallApi(lang: String, since: String) {
         disposel?.let { if (!it.isDisposed) it.dispose() }
+        callApi(lang, since)
     }
 
     private fun callApi(
-        lang: String,
-        since: String
+            lang: String,
+            since: String
     ) {
+        val model = firebaseTrendingConfigModel ?: FirebaseTrendingConfigModel()
 
         val language = if (lang == "All") "" else lang.replace(" ", "_").toLowerCase(Locale.getDefault())
+
+        disposel = RxHelper.getObservable(JsoupProvider.getTrendingService("https://github.com/trending/").getTrending(language, since))
+                .doOnSubscribe {
+                    sendToView {
+                        it.showProgress(0)
+                        it.clearAdapter()
+                    }
+                }.flatMap {
+                    RxHelper.getObservable(getTrendingObservable(it.body() ?: "", model))
+                }.subscribe(
+                        { response -> sendToView { view -> view.onNotifyAdapter(response) } },
+                        { throwable -> onError(throwable) },
+                        { sendToView { it.hideProgress() } }
+                )
+        manageDisposable(disposel)
     }
 
 
@@ -56,9 +74,9 @@ class TrendingFragmentPresenter : BasePresenter<TrendingFragmentMvp.View>(), Tre
             list.select(trendingModel.listNameSublistTag)?.let { li ->
                 trendingList.addAll(li.map { body ->
                     val trendingLang = kotlin.runCatching { body.select(trendingModel.language).text() }
-                        .getOrNull() ?: kotlin.runCatching { body.select(trendingModel.languageFallback).text() }.getOrNull()
+                            .getOrNull() ?: kotlin.runCatching { body.select(trendingModel.languageFallback).text() }.getOrNull()
                     val todayStars = kotlin.runCatching { body.select(trendingModel.todayStars).text() }
-                        .getOrNull() ?: kotlin.runCatching { body.select(trendingModel.todayStarsFallback).text() }.getOrNull()
+                            .getOrNull() ?: kotlin.runCatching { body.select(trendingModel.todayStarsFallback).text() }.getOrNull()
                     val title = kotlin.runCatching { body.select(trendingModel.title).text() }.getOrNull()
                     val description = kotlin.runCatching { body.select(trendingModel.description).text() }.getOrNull()
                     val stars = kotlin.runCatching { body.select(trendingModel.stars).text() }.getOrNull()
