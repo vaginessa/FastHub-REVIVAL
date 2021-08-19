@@ -59,21 +59,9 @@ class LoginChooserActivity : BaseActivity<LoginChooserMvp.View, LoginChooserPres
         }
     }
 
-    @OnClick(R.id.basicAuth) fun onBasicAuthClicked() {
-        LoginActivity.start(this, true)
-    }
-
-    @OnClick(R.id.accessToken) fun onAccessTokenClicked() {
-        LoginActivity.start(this, false)
-    }
-
     @OnClick(R.id.enterprise) internal fun onEnterpriseClicked() {
         if (Login.hasNormalLogin()) {
-            if (PrefGetter.isAllFeaturesUnlocked() || PrefGetter.isEnterpriseEnabled()) {
-                LoginActivity.start(this, true, true)
-            } else {
-                startActivity(Intent(this, PremiumActivity::class.java))
-            }
+            LoginActivity.start(this, true, true)
         } else {
             MessageDialogView.newInstance(getString(R.string.warning), getString(R.string.enterprise_login_warning),
                     false, Bundler.start().put("hide_buttons", true).end())

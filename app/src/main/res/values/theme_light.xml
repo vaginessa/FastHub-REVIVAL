@@ -12,7 +12,7 @@
 
     <style name="ThemeLight" parent="ThemeLight.Base"/>
 
-    <style name="ThemeLight.Base" parent="Theme.AppCompat.Light.NoActionBar">
+    <style name="ThemeLight.Base" parent="Theme.MaterialComponents.Light.NoActionBar.Bridge">
         <item name="card_background">@color/cardview_light_background</item>
         <item name="icon_color">#212121</item>
         <item name="comment_box_style">@style/CommentBoxLight</item>
