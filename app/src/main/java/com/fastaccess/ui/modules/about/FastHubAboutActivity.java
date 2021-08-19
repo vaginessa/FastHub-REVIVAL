@@ -89,6 +89,11 @@ public class FastHubAboutActivity extends MaterialAboutActivity {
                         .setOnClickAction(() -> startActivity(RepoPagerActivity.createIntent(this, "FastHub-RE", "LightDestory")))
                         .build())
                 .addItem(new MaterialAboutActionItem.Builder()
+                        .text(R.string.changelog)
+                        .icon(ContextCompat.getDrawable(context, R.drawable.ic_track_changes))
+                        .setOnClickAction(() -> new ChangelogBottomSheetDialog().show(getSupportFragmentManager(), "ChangelogBottomSheetDialog"))
+                        .build())
+                .addItem(new MaterialAboutActionItem.Builder()
                         .text("Unlock all features")
                         .subText("but don't forget to support developers!")
                         .icon(ContextCompat.getDrawable(context, R.drawable.ic_lock))
@@ -153,11 +158,6 @@ public class FastHubAboutActivity extends MaterialAboutActivity {
 
     private void buildMisc(Context context, MaterialAboutCard.Builder miscCardBuilder) {
         miscCardBuilder.title("[Upstream] " + getString(R.string.about))
-                .addItem(new MaterialAboutActionItem.Builder()
-                        .text(R.string.changelog)
-                        .icon(ContextCompat.getDrawable(context, R.drawable.ic_track_changes))
-                        .setOnClickAction(() -> new ChangelogBottomSheetDialog().show(getSupportFragmentManager(), "ChangelogBottomSheetDialog"))
-                        .build())
                 .addItem(new MaterialAboutActionItem.Builder()
                         .text(R.string.open_source_libs)
                         .icon(ContextCompat.getDrawable(context, R.drawable.ic_github))
