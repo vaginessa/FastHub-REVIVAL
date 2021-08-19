@@ -24,7 +24,7 @@ class GraphContributorsViewModel(
                 val response = model.string()
                 model.close() // Close when not needed
                 val statsModel : StatsModel? = Gson().fromJson(response, object : TypeToken<StatsModel?>() {}.type)
-                if (statsModel != null) {
+                if (statsModel !== null && statsModel.items.isNotEmpty()) {
                     contributions.value = statsModel
                 }
             }catch (e: Exception) {
