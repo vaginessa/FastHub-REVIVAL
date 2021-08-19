@@ -106,6 +106,8 @@ So, after a lot of try and builds, here my setup:
 - Android Studio 4.1.3
 - Gradle Plugin 3.5.4
 
+Create a copy of file `debug_gradle.proprieties` with the name `release_gradle.proprieties` and fill it with your own testing data. 
+
 Using this exact version you should be able to import and build. I really want to port this code to the latest Kotlin (1.5) and latest gradle (7.0) but I am still a junior developer here and I am still learning so upgrading the obsolete code is not on my priority list right now. If you are a Kotlin or Gradle expert, feel free to help with a PR :)
 
 ## :book: Specs / Open-source libraries:
