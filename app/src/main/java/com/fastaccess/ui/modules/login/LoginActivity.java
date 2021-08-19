@@ -32,6 +32,7 @@ import butterknife.OnClick;
 import butterknife.OnEditorAction;
 import es.dmoral.toasty.Toasty;
 import io.reactivex.functions.Action;
+import kotlin.NotImplementedError;
 
 /**
  * Created by Kosh on 08 Feb 2017, 9:10 PM
@@ -39,16 +40,8 @@ import io.reactivex.functions.Action;
 
 public class LoginActivity extends BaseActivity<LoginMvp.View, LoginPresenter> implements LoginMvp.View {
 
-    @BindView(R.id.usernameEditText) TextInputEditText usernameEditText;
-    @BindView(R.id.username) TextInputLayout username;
-    @BindView(R.id.passwordEditText) TextInputEditText passwordEditText;
-    @BindView(R.id.password) TextInputLayout password;
-    @BindView(R.id.twoFactor) TextInputLayout twoFactor;
-    @BindView(R.id.twoFactorEditText) TextInputEditText twoFactorEditText;
-    @BindView(R.id.login) FloatingActionButton login;
     @BindView(R.id.progress) ProgressBar progress;
-    @BindView(R.id.accessTokenCheckbox) FontCheckbox accessTokenCheckbox;
-    @BindView(R.id.endpoint) TextInputLayout endpoint;
+
     @State boolean isBasicAuth;
 
     public static void startOAuth(@NonNull Activity activity) {
@@ -87,37 +80,6 @@ public class LoginActivity extends BaseActivity<LoginMvp.View, LoginPresenter> i
         ActivityHelper.startCustomTab(this, getPresenter().getAuthorizationUrl());
     }
 
-    @OnClick(R.id.login) public void onClick() {
-        doLogin();
-    }
-
-    @OnCheckedChanged(R.id.accessTokenCheckbox) void onCheckChanged(boolean checked) {
-        isBasicAuth = !checked;
-        password.setHint(checked ? getString(R.string.access_token) : getString(R.string
-                .password));
-    }
-
-    @OnEditorAction(R.id.passwordEditText) public boolean onSendPassword() {
-        if (twoFactor.getVisibility() == View.VISIBLE) {
-            twoFactorEditText.requestFocus();
-        } else if (endpoint.getVisibility() == View.VISIBLE) {
-            endpoint.requestFocus();
-        } else {
-            doLogin();
-        }
-        return true;
-    }
-
-    @OnEditorAction(R.id.twoFactorEditText) public boolean onSend2FA() {
-        doLogin();
-        return true;
-    }
-
-    @OnEditorAction(R.id.endpointEditText) boolean onSendEndpoint() {
-        doLogin();
-        return true;
-    }
-
     @Override protected int layout() {
         return R.layout.login_form_layout;
     }
@@ -138,22 +100,21 @@ public class LoginActivity extends BaseActivity<LoginMvp.View, LoginPresenter> i
         return new LoginPresenter();
     }
 
+    @Override
+    public void onRequire2Fa() {
+    }
+
     @Override public void onEmptyUserName(boolean isEmpty) {
-        username.setError(isEmpty ? getString(R.string.required_field) : null);
     }
 
-    @Override public void onRequire2Fa() {
-        Toasty.warning(App.getInstance(), getString(R.string.two_factors_otp_error)).show();
-        twoFactor.setVisibility(View.VISIBLE);
-        hideProgress();
+    @Override
+    public void onEmptyPassword(boolean isEmpty) {
+
     }
 
-    @Override public void onEmptyPassword(boolean isEmpty) {
-        password.setError(isEmpty ? getString(R.string.required_field) : null);
-    }
+    @Override
+    public void onEmptyEndpoint(boolean isEmpty) {
 
-    @Override public void onEmptyEndpoint(boolean isEmpty) {
-        endpoint.setError(isEmpty ? getString(R.string.required_field) : null);
     }
 
     @Override public void onSuccessfullyLoggedIn(boolean extraLogin) {
@@ -167,14 +128,11 @@ public class LoginActivity extends BaseActivity<LoginMvp.View, LoginPresenter> i
         if (savedInstanceState == null) {
             if (getIntent() != null && getIntent().getExtras() != null) {
                 isBasicAuth = getIntent().getExtras().getBoolean(BundleConstant.YES_NO_EXTRA);
-                password.setHint(isBasicAuth ? getString(R.string.password) : getString(R.string.access_token));
                 if (getIntent().getExtras().getBoolean(BundleConstant.EXTRA_TWO)) {
                     onOpenBrowser();
                 }
             }
         }
-        accessTokenCheckbox.setVisibility(isEnterprise() ? View.VISIBLE : View.GONE);
-        endpoint.setVisibility(isEnterprise() ? View.VISIBLE : View.GONE);
     }
 
     @Override protected void onNewIntent(Intent intent) {
@@ -205,8 +163,6 @@ public class LoginActivity extends BaseActivity<LoginMvp.View, LoginPresenter> i
     }
 
     @Override public void showProgress(@StringRes int resId) {
-        login.hide();
-        AppHelper.hideKeyboard(login);
         AnimHelper.animateVisibility(progress, true);
     }
 
@@ -217,15 +173,5 @@ public class LoginActivity extends BaseActivity<LoginMvp.View, LoginPresenter> i
 
     @Override public void hideProgress() {
         progress.setVisibility(View.GONE);
-        login.show();
-    }
-
-    private void doLogin() {
-        if (progress.getVisibility() == View.GONE) {
-            getPresenter().login(InputHelper.toString(username),
-                    InputHelper.toString(password),
-                    InputHelper.toString(twoFactor),
-                    isBasicAuth, InputHelper.toString(endpoint));
-        }
     }
 }
