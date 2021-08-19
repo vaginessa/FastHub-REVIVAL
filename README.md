@@ -31,6 +31,10 @@ __My project, FastHub-RE, tries to continue the awesome job of the original and 
 ## Description
 Yet another **open-source** GitHub client app based on FastHub lookinf forward for newer features.
 
+:warning:**IMPORTANT NOTE**: I am not a professional/senior Android developer. I started my adventure on Android development not so long ago so I am new here, _I am not able to work with this code easily yet, but I will try my best_. This code is not helping me neither, it is generally a mess: most of the stuff is deprecated or so sticked together that if you mess something it will be a pain to stacktrace the error, due to that kapt thing that obfuscates the real error :cry:
+
+**Any help and contribution is very appreciated!**
+
 ## Features  
 - **App**
   - OAuth login feature
@@ -94,7 +98,17 @@ Yet another **open-source** GitHub client app based on FastHub lookinf forward f
 - _**Much more...**_
   - _FastHub-RE will try to implements all the newest GitHub features!_
 
-## Specs / Open-source libraries:
+## :gear: Building
+
+As I have already said, this code base is a mess and pretty old. If you try to import this project on the newest Android Studio (4.2 or high) you will probably be unable to build. I think that some breaking changes between Kotlin 1.3 and Kotlin 1.5 (built-in since Android Studio 4.2) is messing something with kapt and it is unable to properly build the intermediate classes.
+
+So, after a lot of try and builds, here my setup:
+- Android Studio 4.1.3
+- Gradle Plugin 3.5.4
+
+Using this exact version you should be able to import and build. I really want to port this code to the latest Kotlin (1.5) and latest gradle (7.0) but I am still a junior developer here and I am still learning so upgrading the obsolete code is not on my priority list right now. If you are a Kotlin or Gradle expert, feel free to help with a PR :)
+
+## :book: Specs / Open-source libraries:
 
 - Minimum **SDK 21**, _but AppCompat is used all the way ;-)_
 - [**Kotlin**](https://github.com/JetBrains/kotlin) all new modules starting from 2.5.3 will be written in **#Kotlin**.
