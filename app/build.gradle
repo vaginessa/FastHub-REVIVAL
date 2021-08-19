@@ -6,9 +6,6 @@ apply plugin: 'com.apollographql.android'
 apply plugin: 'com.novoda.build-properties'
 
 buildProperties {
-    notThere {
-        using rootProject.file('debug_gradle.properties')
-    }
     secrets {
         using rootProject.file('release_gradle.properties')
     }
@@ -20,12 +17,12 @@ android {
         applicationId "com.fastaccess.github.revival"
         minSdkVersion 21
         targetSdkVersion 29
-        versionCode 473
-        versionName "4.7.3"
-        buildConfigString "GITHUB_CLIENT_ID", (buildProperties.secrets['github_client_id'] | buildProperties.notThere['github_client_id']).string
-        buildConfigString "GITHUB_SECRET", (buildProperties.secrets['github_secret'] | buildProperties.notThere['github_secret']).string
-        buildConfigString "IMGUR_CLIENT_ID", (buildProperties.secrets['imgur_client_id'] | buildProperties.notThere['imgur_client_id']).string
-        buildConfigString "IMGUR_SECRET", (buildProperties.secrets['imgur_secret'] | buildProperties.notThere['imgur_secret']).string
+        versionCode 474
+        versionName "4.7.4"
+        buildConfigString "GITHUB_CLIENT_ID", (buildProperties.secrets['github_client_id']).string
+        buildConfigString "GITHUB_SECRET", (buildProperties.secrets['github_secret']).string
+        buildConfigString "IMGUR_CLIENT_ID", (buildProperties.secrets['imgur_client_id']).string
+        buildConfigString "IMGUR_SECRET", (buildProperties.secrets['imgur_secret']).string
         buildConfigField "String", "REST_URL", '"https://api.github.com/"'
         buildConfigField "String", "IMGUR_URL", '"https://api.imgur.com/3/"'
         multiDexEnabled true
@@ -91,7 +88,6 @@ repositories {
 }
 
 dependencies {
-    implementation fileTree(include: ['*.jar'], dir: 'libs')
     implementation 'androidx.appcompat:appcompat:1.1.0'
     implementation 'com.google.android.material:material:1.0.0'
     implementation 'androidx.cardview:cardview:1.0.0'
