@@ -67,7 +67,7 @@ class MainDrawerFragment : BaseFragment<MainMvp.View, BasePresenter<MainMvp.View
                     item.itemId == R.id.notifications -> activity.startActivity(Intent(activity, NotificationActivity::class.java))
                     item.itemId == R.id.trending -> activity.startActivity(Intent(activity, TrendingActivity::class.java))
                     item.itemId == R.id.openFatHub -> activity.startActivity(
-                        RepoPagerActivity.createIntent(activity, "FastHub-Libre", "thermatk", RepoPagerMvp.ISSUES)
+                        RepoPagerActivity.createIntent(activity, "FastHub-RE", "LightDestory", RepoPagerMvp.ISSUES)
                     )
                     item.itemId == R.id.faq -> activity.startActivity(Intent(activity, PlayStoreWarningActivity::class.java))
                 }
