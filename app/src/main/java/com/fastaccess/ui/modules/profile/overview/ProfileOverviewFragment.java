@@ -40,6 +40,7 @@ import com.fastaccess.ui.widgets.contributions.GitHubContributionsView;
 import com.fastaccess.ui.widgets.recyclerview.BaseViewHolder;
 import com.fastaccess.ui.widgets.recyclerview.DynamicRecyclerView;
 import com.fastaccess.ui.widgets.recyclerview.layout_manager.GridManager;
+import com.prettifier.pretty.PrettifyWebView;
 
 import java.util.List;
 
@@ -80,6 +81,7 @@ public class ProfileOverviewFragment extends BaseFragment<ProfileOverviewMvp.Vie
     @BindView(R.id.pinnedReposTextView) FontTextView pinnedReposTextView;
     @BindView(R.id.pinnedList) DynamicRecyclerView pinnedList;
     @BindView(R.id.pinnedReposCard) CardView pinnedReposCard;
+    @BindView(R.id.webView) PrettifyWebView webView;
     @State User userModel;
     private ProfilePagerMvp.View profileCallback;
 
@@ -138,6 +140,13 @@ public class ProfileOverviewFragment extends BaseFragment<ProfileOverviewMvp.Vie
         if (isMeOrOrganization()) {
             followBtn.setVisibility(GONE);
         }
+    }
+
+    @Override public void onSetMdText(@NonNull String text, String baseUrl, boolean replace) {
+        hideProgress();
+        webView.setVisibility(View.VISIBLE);
+        webView.setGithubContentWithReplace(text, baseUrl, replace);
+        getActivity().invalidateOptionsMenu();
     }
 
     @NonNull @Override public ProfileOverviewPresenter providePresenter() {

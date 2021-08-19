@@ -32,6 +32,8 @@ public interface ProfileOverviewMvp {
         void onUserNotFound();
 
         void onInitPinnedRepos(@NonNull List<GetPinnedReposQuery.Node> nodes);
+
+        void onSetMdText(@NonNull String text, String baseUrl, boolean replace);
     }
 
     interface Presenter extends BaseMvp.FAPresenter {

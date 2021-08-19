@@ -5,6 +5,7 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import android.text.TextUtils;
+import android.util.Log;
 
 import com.apollographql.apollo.ApolloCall;
 import com.apollographql.apollo.api.Response;
@@ -12,6 +13,7 @@ import com.apollographql.apollo.exception.ApolloException;
 import com.apollographql.apollo.rx2.Rx2Apollo;
 import com.fastaccess.data.dao.model.Login;
 import com.fastaccess.data.dao.model.User;
+import com.fastaccess.data.dao.model.ViewerFile;
 import com.fastaccess.helper.BundleConstant;
 import com.fastaccess.helper.InputHelper;
 import com.fastaccess.helper.RxHelper;
@@ -21,8 +23,6 @@ import com.fastaccess.ui.base.mvp.presenter.BasePresenter;
 import com.fastaccess.ui.widgets.contributions.ContributionsDay;
 import com.fastaccess.ui.widgets.contributions.ContributionsProvider;
 import com.fastaccess.ui.widgets.contributions.GitHubContributionsView;
-
-import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -39,6 +39,7 @@ class ProfileOverviewPresenter extends BasePresenter<ProfileOverviewMvp.View> im
     @com.evernote.android.state.State boolean isFollowing;
     @com.evernote.android.state.State String login;
     private ArrayList<User> userOrgs = new ArrayList<>();
+    private boolean readmeFetch = false;
     private ArrayList<GetPinnedReposQuery.Node> nodes = new ArrayList<>();
     private ArrayList<ContributionsDay> contributions = new ArrayList<>();
     private static final String URL = "https://github.com/users/%s/contributions";
@@ -75,6 +76,10 @@ class ProfileOverviewPresenter extends BasePresenter<ProfileOverviewMvp.View> im
 
     @Override public void onError(@NonNull Throwable throwable) {
         int statusCode = RestProvider.getErrorCode(throwable);
+        if(statusCode == 404 && readmeFetch){
+            readmeFetch = false;
+            return;
+        }
         if (statusCode == 404) {
             sendToView(ProfileOverviewMvp.View::onUserNotFound);
             return;
@@ -97,6 +102,7 @@ class ProfileOverviewPresenter extends BasePresenter<ProfileOverviewMvp.View> im
                     .doOnComplete(() -> {
                         loadPinnedRepos(login);
                         loadOrgs();
+                        loadProfileREADME();
                     }), userModel -> {
                 onSendUserToView(userModel);
                 if (userModel != null) {
@@ -145,7 +151,8 @@ class ProfileOverviewPresenter extends BasePresenter<ProfileOverviewMvp.View> im
     }
 
     @Override public void onLoadContributionWidget(@NonNull GitHubContributionsView gitHubContributionsView) {
-        if (!isEnterprise()) {
+        return;
+        /*if (!isEnterprise()) {
             if (contributions == null || contributions.isEmpty()) {
                 String url = String.format(URL, login);
                 manageDisposable(RxHelper.getObservable(RestProvider.getContribution().getContributions(url))
@@ -159,6 +166,7 @@ class ProfileOverviewPresenter extends BasePresenter<ProfileOverviewMvp.View> im
                 loadContributions(contributions, gitHubContributionsView);
             }
         }
+         */
     }
 
     @NonNull @Override public ArrayList<User> getOrgs() {
@@ -197,5 +205,19 @@ class ProfileOverviewPresenter extends BasePresenter<ProfileOverviewMvp.View> im
                     sendToView(view -> view.onInitOrgs(userOrgs));
                 }, Throwable::printStackTrace));
     }
-
+    private void loadProfileREADME() {
+        readmeFetch = true;
+        boolean isMe = login.equalsIgnoreCase(Login.getUser() != null ? Login.getUser().getLogin() : "");
+        String user = login;
+        if(isMe) {
+            user = Login.getUser().getLogin();
+        }
+        String url = String.format("https://api.github.com/repos/%s/%s/readme", user, user);
+        String htmlUrl = String.format("https://github.com/%s%s", user, user);
+        Log.d("MD", String.format("%s %s", url, htmlUrl));
+        Observable<String> observable = RestProvider.getRepoService(isEnterprise()).getReadmeHtml(url);
+        makeRestCall(observable, content -> {
+            sendToView(view -> view.onSetMdText(content,  htmlUrl , false));
+        });
+    }
 }
