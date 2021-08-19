@@ -2,7 +2,7 @@
 [![Releases](https://img.shields.io/github/release/LightDestory/FastHub-RE.svg)](https://github.com/LightDestory/FastHub-RE/releases/latest)
 
 # FastHub-RE(vival)
-<center><img src=".github/assets/web_hi_res_512.png" width=256 alt="Logo"></center>
+<p align="center"><img src=".github/assets/web_hi_res_512.png" width=256 alt="Logo"></p>
 
 **This fork aim to attempt the revival of the aswesome FastHub application. The code base is based on a set of changes done on the original [FastHub repository](https://github.com/k0shk0sh/FastHub) by [thermatk](https://github.com/thermatk/FastHub-Libre)**. We can sum up these changes with:
 
@@ -23,6 +23,9 @@ The reasons behind the initial changes by thermatk are:
   	- This fork will have to carry on without approval until a better solution will surface
   	- The unlocking page and the way to this page is made respective and nudging to go and support
 
+
+Moreover, a set of fixes has been cherry picked from [KaustubhPatange](https://github.com/KaustubhPatange/FastHub)'s fork.
+
 __My project, FastHub-RE, tries to continue the awesome job of the original and currently unmaintained FastHub and the good intentions of FastHub-Libre.__ 
 
 ## Description
@@ -30,7 +33,7 @@ Yet another **open-source** GitHub client app based on FastHub lookinf forward f
 
 ## Features  
 - **App**
-  - OAuth login feature, Basic Authentication and Access Token will be removed soon from the code base
+  - OAuth login feature
   - Multiple Accounts
   - Enterprise Accounts
   - Themes mode
@@ -104,6 +107,7 @@ Yet another **open-source** GitHub client app based on FastHub lookinf forward f
 - [**Android State**](https://github.com/evernote/android-state) for saving instance states
 - [**Lombok**](https://projectlombok.github.io) for getters and setters
 - [**Material-BottomNavigation**](https://github.com/sephiroth74/Material-BottomNavigation) for `BottomBar` tabs
+- [**FastHub Contribution View**](https://github.com/KaustubhPatange/fasthub-contribution-view) for the contribution listing
 - [**Glide**](https://github.com/bumptech/glide) for loading images
 - [**commonmark**](https://github.com/atlassian/commonmark-java) for _Markdown_ conversion to html
 - [**Toasty**](https://github.com/GrenderG/Toasty) for displaying error/success messages
@@ -141,11 +145,6 @@ Yet another **open-source** GitHub client app based on FastHub lookinf forward f
 </details>
 
 <details>
-  <summary>I tried to login via Access Token & OTP but why isn't it working?</summary>
-  <p>You can't login via Access Token & OTP all together due to the lifetime of the OTP code, you'll be required to login in every few seconds.</p>
-</details>
-
-<details>
   <summary>Why are my Private Repo and Enterprise Wiki not showing up?</summary>
   <p>It's due to FastHub scraping GitHub Wiki page & Private Repos require session token that FastHub doesn't have.</p>
 </details>
@@ -162,7 +161,7 @@ Yet another **open-source** GitHub client app based on FastHub lookinf forward f
 
 <details>
   <summary>I'm having this issue! / I want this and that!</summary>
-  <p>Head to https://github.com/k0shk0sh/FastHub/issues/new and create new issue for bugs or feature requests. I really encourage you to search before opening a ticket. Any duplicate request will result in it being closed immediately.</p>
+  <p>Head to https://github.com/LightDestory/FastHub-RE/issues/new and create new issue for bugs or feature requests. I really encourage you to search before opening a ticket. Any duplicate request will result in it being closed immediately.</p>
 </details>
 
 ## License
