@@ -4,7 +4,7 @@ import android.os.Bundle
 import com.fastaccess.data.dao.CommentRequestModel
 import com.fastaccess.data.dao.CommitFileChanges
 import com.fastaccess.data.dao.CommitLinesModel
-import com.fastaccess.data.dao.model.Comment
+import com.fastaccess.data.entity.Comment
 import com.fastaccess.ui.adapter.callback.OnToggleView
 import com.fastaccess.ui.base.adapter.BaseViewHolder
 import com.fastaccess.ui.base.mvp.BaseMvp.FAPresenter

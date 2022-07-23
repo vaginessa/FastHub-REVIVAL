@@ -128,7 +128,7 @@ open class StateLayout : NestedScrollView {
         super.onDetachedFromWindow()
     }
 
-    public override fun onSaveInstanceState(): Parcelable? {
+    public override fun onSaveInstanceState(): Parcelable {
         return StateSaver.saveInstanceState(this, super.onSaveInstanceState())
     }
 

@@ -6,7 +6,6 @@ import android.view.ViewTreeObserver
 import android.webkit.MimeTypeMap
 import android.widget.EditText
 import android.widget.TextView
-import com.annimon.stream.IntStream
 import com.fastaccess.helper.InputHelper.isEmpty
 import com.fastaccess.helper.InputHelper.toString
 import com.fastaccess.helper.Logger.e
@@ -186,7 +185,7 @@ object MarkDownProvider {
         val result = StringBuilder()
         val substring = source.substring(selectionStart, selectionEnd)
         if (!hasNewLine(source, selectionStart)) result.append("\n")
-        IntStream.range(0, level).forEach { result.append("#") }
+        (0 until level).forEach { _ -> result.append("#") }
         result.append(" ").append(substring)
         editText.text.replace(selectionStart, selectionEnd, result.toString())
         editText.setSelection(selectionStart + result.length)

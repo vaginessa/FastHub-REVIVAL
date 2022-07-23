@@ -2,8 +2,8 @@ package com.fastaccess.data.dao
 
 import android.os.Parcel
 import android.os.Parcelable
-import com.fastaccess.data.dao.model.Issue
-import com.fastaccess.data.dao.model.IssueEvent
+import com.fastaccess.data.entity.Issue
+import com.fastaccess.data.entity.IssueEvent
 
 /**
  * Created by Kosh on 10 Dec 2016, 3:34 PM

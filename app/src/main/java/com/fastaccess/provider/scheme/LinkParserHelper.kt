@@ -3,10 +3,7 @@ package com.fastaccess.provider.scheme
 import android.net.Uri
 import android.text.TextUtils
 import android.webkit.MimeTypeMap
-import com.annimon.stream.Optional
-import com.annimon.stream.Stream
 import com.fastaccess.helper.InputHelper
-import com.fastaccess.helper.ObjectsCompat
 import com.fastaccess.helper.PrefGetter
 import java.util.*
 
@@ -21,7 +18,6 @@ object LinkParserHelper {
     const val RAW_AUTHORITY = "raw.githubusercontent.com"
     const val API_AUTHORITY = "api.github.com"
 
-    @JvmField
     val IGNORED_LIST: List<String> = listOf(
         "notifications", "settings", "blog",
         "explore", "dashboard", "repositories",
@@ -33,14 +29,10 @@ object LinkParserHelper {
         "&quot;" to "\"", "&apos;" to "'",
         "&lt;" to "<", "&gt;" to ">", "&amp;" to "&")
 
-    @JvmStatic
-    @SafeVarargs
-    fun <T> returnNonNull(vararg t: T): Optional<T> {
-        return Stream.of(*t).filter { obj: T -> ObjectsCompat.nonNull(obj) }
-            .findFirst()
+    fun <T> returnNonNull(vararg t: T?): T? {
+        return t.firstOrNull { it != null }
     }
 
-    @JvmStatic
     fun getBlobBuilder(uri: Uri): Uri {
         val isSvg =
             "svg".equals(MimeTypeMap.getFileExtensionFromUrl(uri.toString()), ignoreCase = true)
@@ -60,6 +52,50 @@ object LinkParserHelper {
             .appendPath(repo)
             .appendPath("contents")
         for (i in 4 until segments.size) {
+            urlBuilder.appendPath(segments[i])
+        }
+        if (uri.queryParameterNames != null) {
+            for (query in uri.queryParameterNames) {
+                urlBuilder.appendQueryParameter(query, uri.getQueryParameter(query))
+            }
+        }
+        if (uri.encodedFragment != null) {
+            urlBuilder.encodedFragment(uri.encodedFragment)
+        }
+        urlBuilder.appendQueryParameter("ref", branch)
+        return urlBuilder.build()
+    }
+
+    fun getUrlBuilder(uri: Uri): Uri? {
+        return when {
+            uri.host == RAW_AUTHORITY -> {
+                getRawBuilder(uri)
+            }
+            uri.host == HOST_DEFAULT && uri.pathSegments.size > 2 && uri.pathSegments[2] == "blob" -> {
+                getBlobBuilder(uri)
+            }
+            else -> null
+        }
+    }
+
+    private fun getRawBuilder(uri: Uri): Uri {
+        val isSvg =
+            "svg".equals(MimeTypeMap.getFileExtensionFromUrl(uri.toString()), ignoreCase = true)
+        val segments = uri.pathSegments
+        if (isSvg) {
+            return uri
+        }
+        val urlBuilder = Uri.Builder()
+        val owner = segments[0]
+        val repo = segments[1]
+        val branch = segments[2]
+        urlBuilder.scheme("https")
+            .authority(API_AUTHORITY)
+            .appendPath("repos")
+            .appendPath(owner)
+            .appendPath(repo)
+            .appendPath("contents")
+        for (i in 3 until segments.size) {
             urlBuilder.appendPath(segments[i])
         }
         if (uri.queryParameterNames != null) {

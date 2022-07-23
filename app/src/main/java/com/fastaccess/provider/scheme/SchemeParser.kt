@@ -7,8 +7,6 @@ import android.content.Intent
 import android.net.Uri
 import android.text.TextUtils
 import android.webkit.MimeTypeMap
-import com.annimon.stream.Optional
-import com.annimon.stream.Stream
 import com.fastaccess.helper.*
 import com.fastaccess.provider.markdown.MarkDownProvider
 import com.fastaccess.provider.scheme.LinkParserHelper.API_AUTHORITY
@@ -18,10 +16,6 @@ import com.fastaccess.provider.scheme.LinkParserHelper.HOST_GISTS_RAW
 import com.fastaccess.provider.scheme.LinkParserHelper.IGNORED_LIST
 import com.fastaccess.provider.scheme.LinkParserHelper.PROTOCOL_HTTPS
 import com.fastaccess.provider.scheme.LinkParserHelper.RAW_AUTHORITY
-import com.fastaccess.provider.scheme.LinkParserHelper.getBlobBuilder
-import com.fastaccess.provider.scheme.LinkParserHelper.getEndpoint
-import com.fastaccess.provider.scheme.LinkParserHelper.isEnterprise
-import com.fastaccess.provider.scheme.LinkParserHelper.returnNonNull
 import com.fastaccess.ui.modules.code.CodeViewerActivity
 import com.fastaccess.ui.modules.filter.issues.FilterIssuesActivity
 import com.fastaccess.ui.modules.gists.gist.GistActivity
@@ -108,7 +102,8 @@ object SchemeParser {
 
     private fun getIntentForURI(context: Context, data: Uri, showRepoBtn: Boolean): Intent? {
         val authority = data.authority
-        val isEnterprise = PrefGetter.isEnterprise && isEnterprise(authority ?: data.toString())
+        val isEnterprise =
+            PrefGetter.isEnterprise && LinkParserHelper.isEnterprise(authority ?: data.toString())
         if (HOST_GISTS == data.host || "gist".equals(data.pathSegments[0], ignoreCase = true)) {
             val extension = MimeTypeMap.getFileExtensionFromUrl(data.toString())
             if (!InputHelper.isEmpty(extension) && !MarkDownProvider.isArchive(data.lastPathSegment)) {
@@ -145,7 +140,7 @@ object SchemeParser {
                 val blob = getBlob(context, data)
                 val label = getLabel(context, data)
                 val search = getSearchIntent(context, data)
-                val intentOptional = returnNonNull(
+                val intentOptional = LinkParserHelper.returnNonNull(
                     trending,
                     projects,
                     search,
@@ -163,19 +158,17 @@ object SchemeParser {
                     repoWikiIntent,
                     blob
                 )
-                val empty = Optional.empty<Intent>()
-                return if (intentOptional.isPresent && intentOptional !== empty) {
-                    val intent = intentOptional.get()
+                return if (intentOptional != null) {
                     if (isEnterprise) {
-                        if (intent.extras != null) {
-                            val bundle = intent.extras
+                        if (intentOptional.extras != null) {
+                            val bundle = intentOptional.extras
                             bundle!!.putBoolean(BundleConstant.IS_ENTERPRISE, true)
-                            intent.putExtras(bundle)
+                            intentOptional.putExtras(bundle)
                         } else {
-                            intent.putExtra(BundleConstant.IS_ENTERPRISE, true)
+                            intentOptional.putExtra(BundleConstant.IS_ENTERPRISE, true)
                         }
                     }
-                    intent
+                    intentOptional
                 } else {
                     val intent = getGeneralRepo(context, data)
                     if (isEnterprise) {
@@ -235,7 +228,7 @@ object SchemeParser {
         }
         return if (issueNumber < 1) null else PullRequestPagerActivity.createIntent(
             context, repo!!, owner!!, issueNumber, showRepoBtn,
-            isEnterprise(uri.toString()), commentId ?: 0
+            LinkParserHelper.isEnterprise(uri.toString()), commentId ?: 0
         )
     }
 
@@ -274,7 +267,7 @@ object SchemeParser {
         }
         return if (issueNumber < 1) null else IssuePagerActivity.createIntent(
             context, repo!!, owner!!, issueNumber, showRepoBtn,
-            isEnterprise(uri.toString()), commentId ?: 0
+            LinkParserHelper.isEnterprise(uri.toString()), commentId ?: 0
         )
     }
 
@@ -341,7 +334,7 @@ object SchemeParser {
             if (projectId != null && projectId > 0) {
                 return getIntent(
                     context, owner, repoName, projectId.toLong(),
-                    isEnterprise(uri.toString())
+                    LinkParserHelper.isEnterprise(uri.toString())
                 )
             }
         }
@@ -375,7 +368,7 @@ object SchemeParser {
             return null
         }
         val isEnterprise =
-            PrefGetter.isEnterprise && Uri.parse(getEndpoint(PrefGetter.enterpriseUrl!!)).authority
+            PrefGetter.isEnterprise && Uri.parse(LinkParserHelper.getEndpoint(PrefGetter.enterpriseUrl!!)).authority
                 .equals(uri.authority, ignoreCase = true)
         if (uri.authority == HOST_DEFAULT || uri.authority == API_AUTHORITY || isEnterprise) {
             val segments = uri.pathSegments
@@ -400,14 +393,13 @@ object SchemeParser {
     }
 
     private fun getCommits(context: Context, uri: Uri, showRepoBtn: Boolean): Intent? {
-        val segments = Stream.of(uri.pathSegments)
+        val segments = uri.pathSegments
             .filter { value: String ->
                 !value.equals(
                     "api",
                     ignoreCase = true
                 ) || !value.equals("v3", ignoreCase = true)
             }
-            .toList()
         if (segments.isEmpty() || segments.size < 3) return null
         var login: String? = null
         var repoId: String? = null
@@ -427,14 +419,13 @@ object SchemeParser {
     }
 
     private fun getCommit(context: Context, uri: Uri, showRepoBtn: Boolean): Intent? {
-        val segments = Stream.of(uri.pathSegments)
+        val segments = uri.pathSegments
             .filter { value: String ->
                 !value.equals(
                     "api",
                     ignoreCase = true
                 ) || !value.equals("v3", ignoreCase = true)
             }
-            .toList()
         if (segments.size < 3 || "commit" != segments[2]) return null
         val login = segments[0]
         val repoId = segments[1]
@@ -485,12 +476,12 @@ object SchemeParser {
         val segmentTwo = segments[2]
         val extension = MimeTypeMap.getFileExtensionFromUrl(uri.toString())
         if (InputHelper.isEmpty(extension) || TextUtils.isDigitsOnly(extension)) {
-            val urlBuilder = getBlobBuilder(uri)
+            val urlBuilder = LinkParserHelper.getUrlBuilder(uri)
+            urlBuilder ?: return null
             return RepoFilesActivity.getIntent(context, urlBuilder.toString())
         }
         if (segmentTwo == "blob" || segmentTwo == "tree") {
-            val urlBuilder = getBlobBuilder(uri)
-            Logger.e(urlBuilder)
+            val urlBuilder = LinkParserHelper.getBlobBuilder(uri)
             return CodeViewerActivity.createIntent(context, urlBuilder.toString(), uri.toString())
         } else {
             val authority = uri.authority

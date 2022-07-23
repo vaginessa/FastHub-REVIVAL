@@ -16,13 +16,13 @@ import android.media.AudioManager
 import android.os.Build
 import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat
-import com.annimon.stream.Stream
 import com.fastaccess.R
 import com.fastaccess.data.dao.Pageable
-import com.fastaccess.data.dao.model.Comment
-import com.fastaccess.data.dao.model.Login
-import com.fastaccess.data.dao.model.Notification
-import com.fastaccess.data.dao.model.NotificationQueue
+import com.fastaccess.data.entity.Comment
+import com.fastaccess.data.entity.Notification
+import com.fastaccess.data.entity.dao.LoginDao
+import com.fastaccess.data.entity.dao.NotificationDao
+import com.fastaccess.data.entity.dao.NotificationQueueDao
 import com.fastaccess.helper.AppHelper
 import com.fastaccess.helper.InputHelper
 import com.fastaccess.helper.ParseDateFormat
@@ -40,18 +40,14 @@ import java.util.concurrent.TimeUnit
  */
 class NotificationSchedulerJobTask : JobService() {
     override fun onStartJob(job: JobParameters): Boolean {
-        if (!(SINGLE_JOB_ID == job.jobId)) {
+        if (SINGLE_JOB_ID != job.jobId) {
             if (PrefGetter.notificationTaskDuration == -1) {
                 scheduleJob(this, -1, false)
                 finishJob(job)
                 return true
             }
         }
-        var login: Login? = null
-        try {
-            login = Login.getUser()
-        } catch (ignored: Exception) {
-        }
+        val login = LoginDao.getUser().blockingGet().get()
         if (login != null) {
             val task = RestProvider.getNotificationService(PrefGetter.isEnterprise)
                 .getNotifications(ParseDateFormat.lastWeekDate)
@@ -76,16 +72,16 @@ class NotificationSchedulerJobTask : JobService() {
 
     private fun onSave(notificationThreadModels: List<Notification>?, job: JobParameters) {
         if (notificationThreadModels != null) {
-            Notification.save(notificationThreadModels)
+            NotificationDao.save(notificationThreadModels).subscribe()
             onNotifyUser(notificationThreadModels, job)
         }
     }
 
     private fun onNotifyUser(notificationThreadModels: List<Notification>, job: JobParameters) {
-        val count = Stream.of(notificationThreadModels)
-            .filter { obj: Notification -> obj.isUnread }
+        val count = notificationThreadModels
+            .filter { obj -> obj.unread }
             .count()
-        if (count == 0L) {
+        if (count == 0) {
             AppHelper.cancelAllNotifications(applicationContext)
             finishJob(job)
             return
@@ -96,15 +92,15 @@ class NotificationSchedulerJobTask : JobService() {
         val task = Observable.fromIterable(notificationThreadModels)
             .subscribeOn(Schedulers.io())
             .filter { notification: Notification ->
-                notification.isUnread && first.id != notification.id && !NotificationQueue.exists(
+                notification.unread && first.id != notification.id && !NotificationQueueDao.exists(
                     notification.id
-                )
+                ).blockingGet()
             }
             .take(10)
             .flatMap({ notification: Notification ->
-                if (notification.subject != null && notification.subject.latestCommentUrl != null) {
+                if (notification.subject != null && notification.subject!!.latestCommentUrl != null) {
                     return@flatMap RestProvider.getNotificationService(PrefGetter.isEnterprise)
-                        .getComment(notification.subject.latestCommentUrl!!)
+                        .getComment(notification.subject!!.latestCommentUrl!!)
                         .subscribeOn(Schedulers.io())
                 } else {
                     return@flatMap Observable.empty<Comment>()
@@ -112,9 +108,9 @@ class NotificationSchedulerJobTask : JobService() {
             }) { thread: Notification, comment: Comment? ->
                 val customNotificationModel = CustomNotificationModel()
                 val url: String
-                if (comment != null && comment.user != null) {
-                    url = comment.user.avatarUrl
-                    if (!InputHelper.isEmpty(thread.subject.latestCommentUrl)) {
+                if (comment?.user != null) {
+                    url = comment.user!!.avatarUrl!!
+                    if (!InputHelper.isEmpty(thread.subject!!.latestCommentUrl)) {
                         customNotificationModel.comment = comment
                         customNotificationModel.url = url
                     }
@@ -141,7 +137,7 @@ class NotificationSchedulerJobTask : JobService() {
                     )
                 }
             }, { finishJob(job) }) {
-                if (!NotificationQueue.exists(first.id)) {
+                if (!NotificationQueueDao.exists(first.id).blockingGet()) {
                     val grouped = getSummaryGroupNotification(
                         first,
                         accentColor,
@@ -149,9 +145,10 @@ class NotificationSchedulerJobTask : JobService() {
                     )
                     showNotification(first.id, grouped)
                 }
-                val task2 = NotificationQueue.put(notificationThreadModels)
+                val task2 = NotificationQueueDao.put(notificationThreadModels)
+                    .toObservable()
                     .subscribe(
-                        { },
+                        {},
                         { obj: Throwable -> obj.printStackTrace() }) { finishJob(job) }
             }
     }
@@ -171,8 +168,8 @@ class NotificationSchedulerJobTask : JobService() {
 
     private fun withoutComments(thread: Notification?, context: Context, accentColor: Int) {
         @SuppressLint("LaunchActivityFromNotification") val toAdd = getNotification(
-            thread!!.subject!!.title!!, thread.repository.fullName,
-            if (thread.repository != null) thread.repository.fullName else "general"
+            thread!!.subject!!.title!!, thread.repository?.fullName!!,
+            if (thread.repository != null) thread.repository?.fullName!! else "general"
         )
             .setLargeIcon(BitmapFactory.decodeResource(resources, R.mipmap.ic_launcher))
             .setContentIntent(
@@ -183,7 +180,7 @@ class NotificationSchedulerJobTask : JobService() {
             .addAction(
                 R.drawable.ic_github, context.getString(R.string.open), getPendingIntent(
                     thread.id, thread
-                        .subject.url!!
+                        .subject!!.url!!
                 )
             )
             .addAction(
@@ -191,10 +188,10 @@ class NotificationSchedulerJobTask : JobService() {
                 context.getString(R.string.mark_as_read),
                 getReadOnlyPendingIntent(
                     thread.id, thread
-                        .subject.url!!
+                        .subject!!.url!!
                 )
             )
-            .setWhen(if (thread.updatedAt != null) thread.updatedAt.time else System.currentTimeMillis())
+            .setWhen(if (thread.updatedAt != null) thread.updatedAt!!.time else System.currentTimeMillis())
             .setShowWhen(true)
             .setColor(accentColor)
             .setGroup(NOTIFICATION_GROUP_ID)
@@ -219,15 +216,15 @@ class NotificationSchedulerJobTask : JobService() {
         accentColor: Int
     ) {
         @SuppressLint("LaunchActivityFromNotification") val toAdd = getNotification(
-            if (comment?.user != null) comment.user.login else "",
+            if (comment?.user != null) comment.user?.login!! else "",
             MarkDownProvider.stripMdText(comment?.body),
-            if (thread?.repository != null) thread.repository.fullName else "general"
+            if (thread?.repository != null) thread.repository?.fullName!! else "general"
         )
             .setLargeIcon(BitmapFactory.decodeResource(resources, R.mipmap.ic_launcher))
             .setSmallIcon(R.drawable.ic_notification)
             .setStyle(
                 NotificationCompat.BigTextStyle()
-                    .setBigContentTitle(if (comment?.user != null) comment.user.login else "")
+                    .setBigContentTitle(if (comment?.user != null) comment.user?.login else "")
                     .bigText(MarkDownProvider.stripMdText(comment?.body))
             )
             .setWhen(comment?.createdAt?.time!!)
@@ -243,10 +240,10 @@ class NotificationSchedulerJobTask : JobService() {
                 context.getString(R.string.mark_as_read),
                 getReadOnlyPendingIntent(
                     thread.id,
-                    thread.subject.url!!
+                    thread.subject?.url!!
                 )
             )
-            .setContentIntent(getPendingIntent(thread.id, thread.subject.url!!))
+            .setContentIntent(getPendingIntent(thread.id, thread.subject?.url!!))
             .setColor(accentColor)
             .setGroup(NOTIFICATION_GROUP_ID)
             .build()
@@ -265,27 +262,27 @@ class NotificationSchedulerJobTask : JobService() {
             PendingIntent.FLAG_UPDATE_CURRENT
         )
         val builder = getNotification(
-            thread.subject.title!!, thread.repository.fullName,
-            if (thread.repository != null) thread.repository.fullName else "general"
+            thread.subject?.title!!, thread.repository?.fullName!!,
+            if (thread.repository != null) thread.repository?.fullName!! else "general"
         )
             .setContentIntent(
                 if (toNotificationActivity) pendingIntent else getPendingIntent(
                     thread.id,
-                    thread.subject.url!!
+                    thread.subject?.url!!
                 )
             )
             .addAction(
                 R.drawable.ic_github, getString(R.string.open), getPendingIntent(
-                    thread.id, thread.subject.url!!
+                    thread.id, thread.subject?.url!!
                 )
             )
             .addAction(
                 R.drawable.ic_eye_off, getString(R.string.mark_as_read), getReadOnlyPendingIntent(
                     thread.id, thread
-                        .subject.url!!
+                        .subject?.url!!
                 )
             )
-            .setWhen(if (thread.updatedAt != null) thread.updatedAt.time else System.currentTimeMillis())
+            .setWhen(if (thread.updatedAt != null) thread.updatedAt!!.time else System.currentTimeMillis())
             .setShowWhen(true)
             .setSmallIcon(R.drawable.ic_notification)
             .setColor(accentColor)
@@ -357,6 +354,7 @@ class NotificationSchedulerJobTask : JobService() {
             scheduleJob(context, duration, false)
         }
 
+        @SuppressLint("MissingPermission")
         @JvmStatic
         fun scheduleJob(context: Context, duration: Int, cancel: Boolean) {
             val jobScheduler = context.getSystemService(JOB_SCHEDULER_SERVICE) as JobScheduler

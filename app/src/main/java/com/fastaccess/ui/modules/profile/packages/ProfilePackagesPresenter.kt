@@ -1,9 +1,9 @@
 package com.fastaccess.ui.modules.profile.packages
 
-import android.text.TextUtils
 import android.view.View
 import android.widget.Toast
-import com.fastaccess.data.dao.model.GitHubPackage
+import com.fastaccess.data.entity.GitHubPackage
+import com.fastaccess.data.entity.dao.GitHubPackageDao
 import com.fastaccess.helper.RxHelper.getObservable
 import com.fastaccess.provider.rest.RestProvider.getOrgService
 import com.fastaccess.provider.rest.RestProvider.getUserService
@@ -47,7 +47,7 @@ class ProfilePackagesPresenter : BasePresenter<ProfilePackagesMvp.View>(),
         ) { packageModelPageable ->
             lastPage = packageModelPageable.last
             if (currentPage == 1) {
-                manageDisposable(GitHubPackage.save(packageModelPageable.items!!, -1))
+                manageObservable(GitHubPackageDao.save(packageModelPageable.items!!, -1).toObservable())
             }
             sendToView { view ->
                 view.onNotifyAdapter(packageModelPageable.items, page)
@@ -60,7 +60,7 @@ class ProfilePackagesPresenter : BasePresenter<ProfilePackagesMvp.View>(),
         if (packages.isEmpty()) {
             manageDisposable(
                 getObservable(
-                    GitHubPackage.getPackagesOf(login, selectedType!!).toObservable()
+                    GitHubPackageDao.getPackagesOf(login, selectedType!!).toObservable()
                 ).subscribe { packageModels ->
                     sendToView { view ->
                         view.onNotifyAdapter(packageModels, 1)

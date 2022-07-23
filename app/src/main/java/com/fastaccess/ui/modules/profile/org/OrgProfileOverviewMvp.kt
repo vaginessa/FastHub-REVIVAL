@@ -1,7 +1,7 @@
 package com.fastaccess.ui.modules.profile.org
 
 import android.os.Bundle
-import com.fastaccess.data.dao.model.User
+import com.fastaccess.data.entity.User
 import com.fastaccess.ui.base.mvp.BaseMvp.FAPresenter
 import com.fastaccess.ui.base.mvp.BaseMvp.FAView
 

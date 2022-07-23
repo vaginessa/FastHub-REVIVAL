@@ -98,9 +98,9 @@ android {
     }
 }
 
-kapt {
-    keepJavacAnnotationProcessors = true
-}
+//kapt {
+//    keepJavacAnnotationProcessors = true
+//}
 
 apollo {
     packageName.set("com.fastaccess.github")
@@ -111,16 +111,16 @@ dependencies {
     implementation(fileTree(mapOf("dir" to "libs", "include" to listOf("*.jar"))))
 
     // androidx
-    implementation("androidx.appcompat:appcompat:1.4.1")
-    implementation("androidx.fragment:fragment-ktx:1.4.1")
-    implementation("com.google.android.material:material:1.5.0")
+    implementation("androidx.appcompat:appcompat:1.4.2")
+    implementation("androidx.fragment:fragment-ktx:1.5.0")
+    implementation("com.google.android.material:material:1.6.1")
     implementation("androidx.cardview:cardview:1.0.0")
     implementation("androidx.recyclerview:recyclerview:1.2.1")
     implementation("androidx.legacy:legacy-preference-v14:1.0.0")
     implementation("androidx.browser:browser:1.4.0")
     implementation("androidx.palette:palette-ktx:1.0.0")
     implementation("androidx.swiperefreshlayout:swiperefreshlayout:1.1.0")
-    implementation("androidx.core:core-splashscreen:1.0.0-beta02")
+    implementation("androidx.core:core-splashscreen:1.0.0-rc01")
 
     // thirtyinch
     implementation("com.github.Grandcentrix.ThirtyInch:thirtyinch:v1.0.1")
@@ -172,8 +172,8 @@ dependencies {
     implementation("com.github.daniel-stoneuk:material-about-library:2.1.0")
 
     // requery
-    implementation("io.requery:requery:1.6.0")
-    implementation("io.requery:requery-android:1.6.0")
+//    implementation("io.requery:requery:1.6.0")
+//    implementation("io.requery:requery-android:1.6.0")
 //    kapt("io.requery:requery-processor:1.6.0")
 
     // about lib
@@ -225,7 +225,22 @@ dependencies {
 
     // androidx javax annotation
     implementation("org.glassfish:javax.annotation:10.0-b28")
-    implementation("androidx.annotation:annotation:1.3.0")
+    implementation("androidx.annotation:annotation:1.4.0")
+
+
+    // shortbread
+    implementation("com.github.matthiasrobbers:shortbread:1.4.0")
+//    kapt("com.github.matthiasrobbers:shortbread-compiler:1.4.0")
+
+    // objectbox
+    implementation("io.objectbox:objectbox-kotlin:3.1.2")
+    implementation("io.objectbox:objectbox-rxjava:3.1.2")
+//    debugImplementation("io.objectbox:objectbox-android-objectbrowser:3.1.2")
+    implementation("io.objectbox:objectbox-android:3.1.2")
+
+
+    // cache
+//    implementation("com.github.ben-manes.caffeine:caffeine:3.0.6")
 
     testImplementation("junit:junit:4.13.2")
     testImplementation("org.mockito:mockito-core:4.4.0")
@@ -237,9 +252,10 @@ dependencies {
     androidTestImplementation("androidx.test.espresso:espresso-core:3.4.0")
 
     // 泄漏检测
-    debugImplementation("com.squareup.leakcanary:leakcanary-android:2.8.1")
+//    debugImplementation("com.squareup.leakcanary:leakcanary-android:2.8.1")
 }
 
+apply(plugin = "io.objectbox")
 
 java {
     sourceCompatibility = JavaVersion.VERSION_1_8

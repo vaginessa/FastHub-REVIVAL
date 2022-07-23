@@ -3,7 +3,7 @@ package com.fastaccess.ui.modules.login
 import android.content.Intent
 import android.net.Uri
 import com.fastaccess.data.dao.AccessTokenModel
-import com.fastaccess.data.dao.model.Login
+import com.fastaccess.data.entity.Login
 import com.fastaccess.ui.base.mvp.BaseMvp.FAPresenter
 import com.fastaccess.ui.base.mvp.BaseMvp.FAView
 

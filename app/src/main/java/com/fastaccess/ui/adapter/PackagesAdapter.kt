@@ -1,7 +1,7 @@
 package com.fastaccess.ui.adapter
 
 import android.view.ViewGroup
-import com.fastaccess.data.dao.model.GitHubPackage
+import com.fastaccess.data.entity.GitHubPackage
 import com.fastaccess.ui.adapter.viewholder.PackagesViewHolder
 import com.fastaccess.ui.adapter.viewholder.PackagesViewHolder.Companion.newInstance
 import com.fastaccess.ui.base.adapter.BaseRecyclerAdapter

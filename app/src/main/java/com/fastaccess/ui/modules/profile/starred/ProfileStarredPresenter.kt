@@ -2,8 +2,9 @@ package com.fastaccess.ui.modules.profile.starred
 
 import android.view.View
 import com.fastaccess.data.dao.Pageable
-import com.fastaccess.data.dao.model.Repo
-import com.fastaccess.helper.RxHelper.getObservable
+import com.fastaccess.data.entity.Repo
+import com.fastaccess.data.entity.dao.RepoDao
+import com.fastaccess.helper.RxHelper.getSingle
 import com.fastaccess.provider.rest.RestProvider.getUserService
 import com.fastaccess.provider.scheme.SchemeParser.launchUri
 import com.fastaccess.ui.base.mvp.presenter.BasePresenter
@@ -60,7 +61,12 @@ class ProfileStarredPresenter : BasePresenter<ProfileStarredMvp.View>(),
         ) { repoModelPageable ->
             lastPage = repoModelPageable.last
             if (currentPage == 1) {
-                manageDisposable(Repo.saveStarred(repoModelPageable.items!!, parameter))
+                manageObservable(
+                    RepoDao.saveStarred(
+                        repoModelPageable.items!!,
+                        parameter
+                    ).toObservable()
+                )
             }
             sendToView { view ->
                 view.onUpdateCount(starredCount)
@@ -73,8 +79,8 @@ class ProfileStarredPresenter : BasePresenter<ProfileStarredMvp.View>(),
     override fun onWorkOffline(login: String) {
         if (repos.isEmpty()) {
             manageDisposable(
-                getObservable(
-                    Repo.getStarred(login).toObservable()
+                getSingle(
+                    RepoDao.getStarred(login)
                 ).subscribe { repoModels ->
                     sendToView { view ->
                         starredCount = -1
@@ -88,7 +94,7 @@ class ProfileStarredPresenter : BasePresenter<ProfileStarredMvp.View>(),
     }
 
     override fun onItemClick(position: Int, v: View?, item: Repo) {
-        launchUri(v!!.context, item.htmlUrl)
+        launchUri(v!!.context, item.htmlUrl!!)
     }
 
     override fun onItemLongClick(position: Int, v: View?, item: Repo) {}

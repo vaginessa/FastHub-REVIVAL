@@ -2,7 +2,7 @@ package com.fastaccess.data.dao
 
 import android.os.Parcel
 import android.os.Parcelable
-import com.fastaccess.data.dao.model.Repo
+import com.fastaccess.data.entity.Repo
 
 /**
  * Created by Kosh on 19 Feb 2017, 1:17 AM

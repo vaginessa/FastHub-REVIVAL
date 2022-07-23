@@ -18,7 +18,7 @@ class CheckVersionService : IntentService("CheckVersionService") {
                 .getLatestRelease("LightDestory", "FastHub-RE"))
                 .subscribe({ t ->
                     t?.let {
-                        Toast.makeText(App.getInstance(), if (BuildConfig.VERSION_NAME.contains(it.tagName))
+                        Toast.makeText(App.getInstance(), if (BuildConfig.VERSION_NAME.contains(it.tagName!!))
                             R.string.up_to_date else R.string.new_version, Toast.LENGTH_LONG).show()
                     }
                 }, { throwable -> throwable.printStackTrace() })

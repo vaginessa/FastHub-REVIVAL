@@ -3,9 +3,9 @@ package com.fastaccess.ui.modules.repos.issues.create
 import android.content.Intent
 import com.fastaccess.data.dao.LabelModel
 import com.fastaccess.data.dao.MilestoneModel
-import com.fastaccess.data.dao.model.Issue
-import com.fastaccess.data.dao.model.PullRequest
-import com.fastaccess.data.dao.model.User
+import com.fastaccess.data.entity.Issue
+import com.fastaccess.data.entity.PullRequest
+import com.fastaccess.data.entity.User
 import com.fastaccess.ui.base.mvp.BaseMvp.FAPresenter
 import com.fastaccess.ui.base.mvp.BaseMvp.FAView
 import com.fastaccess.ui.modules.repos.extras.assignees.AssigneesMvp.SelectedAssigneesListener

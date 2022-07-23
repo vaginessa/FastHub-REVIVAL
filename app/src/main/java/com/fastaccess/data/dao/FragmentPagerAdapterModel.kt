@@ -3,12 +3,12 @@ package com.fastaccess.data.dao
 import android.content.Context
 import androidx.fragment.app.Fragment
 import com.fastaccess.R
-import com.fastaccess.data.dao.model.Commit
-import com.fastaccess.data.dao.model.Gist
-import com.fastaccess.data.dao.model.Login
-import com.fastaccess.data.dao.model.PullRequest
 import com.fastaccess.data.dao.types.IssueState
 import com.fastaccess.data.dao.types.MyIssuesType
+import com.fastaccess.data.entity.Commit
+import com.fastaccess.data.entity.Gist
+import com.fastaccess.data.entity.PullRequest
+import com.fastaccess.data.entity.dao.LoginDao
 import com.fastaccess.ui.modules.feeds.FeedsFragment
 import com.fastaccess.ui.modules.gists.GistsFragment
 import com.fastaccess.ui.modules.gists.gist.comments.GistCommentsFragment
@@ -197,7 +197,7 @@ class FragmentPagerAdapterModel(var title: String, var fragment: Fragment?, var 
                 ),
                 FragmentPagerAdapterModel(
                     context.getString(R.string.commits),
-                    PullRequestCommitsFragment.newInstance(repoId, login, number.toLong())
+                    PullRequestCommitsFragment.newInstance(repoId!!, login!!, number.toLong())
                 ),
                 FragmentPagerAdapterModel(
                     context.getString(R.string.files),
@@ -242,13 +242,13 @@ class FragmentPagerAdapterModel(var title: String, var fragment: Fragment?, var 
 
         @JvmStatic
         fun buildForCommit(context: Context, commitModel: Commit): List<FragmentPagerAdapterModel> {
-            val login = commitModel.login
-            val repoId = commitModel.repoId
-            val sha = commitModel.sha
+            val login = commitModel.login!!
+            val repoId = commitModel.repoId!!
+            val sha = commitModel.sha!!
             return listOf(
                 FragmentPagerAdapterModel(
                     context.getString(R.string.files),
-                    CommitFilesFragment.newInstance(commitModel.sha, commitModel.files)
+                    CommitFilesFragment.newInstance(sha, commitModel.files)
                 ),
                 FragmentPagerAdapterModel(
                     context.getString(R.string.comments),
@@ -262,13 +262,12 @@ class FragmentPagerAdapterModel(var title: String, var fragment: Fragment?, var 
             return listOf(
                 FragmentPagerAdapterModel(
                     context.getString(R.string.files), GistFilesListFragment.newInstance(
-                        gistsModel
-                            .filesAsList, false
+                        gistsModel.getFilesAsList(), false
                     )
                 ),
                 FragmentPagerAdapterModel(
                     context.getString(R.string.comments),
-                    GistCommentsFragment.newInstance(gistsModel.gistId)
+                    GistCommentsFragment.newInstance(gistsModel.gistId!!)
                 )
             )
         }
@@ -295,8 +294,9 @@ class FragmentPagerAdapterModel(var title: String, var fragment: Fragment?, var 
         fun buildForGists(context: Context): List<FragmentPagerAdapterModel> {
             return listOf(
                 FragmentPagerAdapterModel(
-                    context.getString(R.string.my_gists), ProfileGistsFragment
-                        .newInstance(Login.getUser().login)
+                    context.getString(R.string.my_gists),
+                    ProfileGistsFragment
+                        .newInstance(LoginDao.getUser().blockingGet().or().login!!)
                 ),
                 FragmentPagerAdapterModel(
                     context.getString(R.string.starred),

@@ -8,7 +8,6 @@ import com.google.gson.GsonBuilder
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import okhttp3.Request
-import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import java.lang.reflect.Modifier
@@ -23,22 +22,16 @@ object ImgurProvider {
         .create()
 
     private fun provideOkHttpClient(): OkHttpClient {
-        val client = OkHttpClient.Builder()
-        if (BuildConfig.DEBUG) {
-            client.addInterceptor(
-                HttpLoggingInterceptor()
-                    .setLevel(HttpLoggingInterceptor.Level.BODY)
-            )
-        }
-        client.addInterceptor(Interceptor { chain: Interceptor.Chain ->
-            val original = chain.request()
-            val requestBuilder: Request.Builder = original.newBuilder()
-            requestBuilder.header("Authorization", "Client-ID " + BuildConfig.IMGUR_CLIENT_ID)
-            requestBuilder.method(original.method, original.body)
-            val request: Request = requestBuilder.build()
-            chain.proceed(request)
-        })
-        return client.build()
+        return HttpProvider.provideOkHttpClient(
+            Interceptor { chain: Interceptor.Chain ->
+                val original = chain.request()
+                val requestBuilder: Request.Builder = original.newBuilder()
+                requestBuilder.header("Authorization", "Client-ID " + BuildConfig.IMGUR_CLIENT_ID)
+                requestBuilder.method(original.method, original.body)
+                val request: Request = requestBuilder.build()
+                chain.proceed(request)
+            }
+        )
     }
 
     private fun provideRetrofit(): Retrofit {

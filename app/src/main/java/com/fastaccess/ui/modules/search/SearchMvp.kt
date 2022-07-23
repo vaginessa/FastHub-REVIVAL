@@ -3,7 +3,7 @@ package com.fastaccess.ui.modules.search
 import android.widget.AutoCompleteTextView
 import androidx.annotation.IntRange
 import androidx.viewpager.widget.ViewPager
-import com.fastaccess.data.dao.model.SearchHistory
+import com.fastaccess.data.entity.SearchHistory
 import com.fastaccess.ui.base.mvp.BaseMvp.FAPresenter
 import com.fastaccess.ui.base.mvp.BaseMvp.FAView
 

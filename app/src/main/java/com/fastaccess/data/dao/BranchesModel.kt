@@ -2,7 +2,7 @@ package com.fastaccess.data.dao
 
 import android.os.Parcel
 import android.os.Parcelable
-import com.fastaccess.data.dao.model.Commit
+import com.fastaccess.data.entity.Commit
 import com.google.gson.annotations.SerializedName
 
 /**

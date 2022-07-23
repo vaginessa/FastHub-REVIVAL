@@ -8,6 +8,7 @@ import android.content.Intent
 import android.net.Uri
 import androidx.core.app.NotificationCompat
 import com.fastaccess.R
+import com.fastaccess.data.entity.dao.NotificationDao
 import com.fastaccess.helper.AppHelper.cancelNotification
 import com.fastaccess.helper.BundleConstant
 import com.fastaccess.helper.Bundler.Companion.start
@@ -105,7 +106,7 @@ class ReadNotificationService : IntentService("ReadNotificationService") {
     }
 
     private fun markSingleAsRead(id: Long) {
-        com.fastaccess.data.dao.model.Notification.markAsRead(id)
+        NotificationDao.markAsRead(id)
         val task = getNotificationService(isEnterprise)
             .markAsRead(id.toString())
             .doOnSubscribe { notify(id, notification!!.build()) }

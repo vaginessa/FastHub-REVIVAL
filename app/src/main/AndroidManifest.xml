@@ -8,6 +8,8 @@
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE"/>
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
     <uses-permission
         android:name="android.permission.WRITE_EXTERNAL_STORAGE"
         android:maxSdkVersion="28" />
@@ -16,6 +18,10 @@
         tools:ignore="ProtectedPermissions" />
 
     <queries>
+        <package android:name="com.fastaccess.github" />
+        <package android:name="com.fastaccess.github.debug" />
+        <package android:name="com.fastaccess.github.revival" />
+        <package android:name="com.fastaccess.github.revival.debug" />
         <package android:name="com.dv.adm.pay" />
         <package android:name="com.dv.adm" />
         <package android:name="idm.internet.download.manager.plus" />

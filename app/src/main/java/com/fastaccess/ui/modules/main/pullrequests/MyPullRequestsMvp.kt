@@ -1,9 +1,9 @@
 package com.fastaccess.ui.modules.main.pullrequests
 
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout.OnRefreshListener
-import com.fastaccess.data.dao.model.PullRequest
 import com.fastaccess.data.dao.types.IssueState
 import com.fastaccess.data.dao.types.MyIssuesType
+import com.fastaccess.data.entity.PullRequest
 import com.fastaccess.provider.rest.loadmore.OnLoadMore
 import com.fastaccess.ui.base.adapter.BaseViewHolder
 import com.fastaccess.ui.base.mvp.BaseMvp.*

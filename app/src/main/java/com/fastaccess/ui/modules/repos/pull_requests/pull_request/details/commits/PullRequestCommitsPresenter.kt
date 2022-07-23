@@ -2,7 +2,8 @@ package com.fastaccess.ui.modules.repos.pull_requests.pull_request.details.commi
 
 import android.os.Bundle
 import android.view.View
-import com.fastaccess.data.dao.model.Commit
+import com.fastaccess.data.entity.Commit
+import com.fastaccess.data.entity.dao.CommitDao
 import com.fastaccess.helper.BundleConstant
 import com.fastaccess.helper.InputHelper.isEmpty
 import com.fastaccess.helper.RxHelper
@@ -51,7 +52,9 @@ class PullRequestCommitsPresenter : BasePresenter<PullRequestCommitsMvp.View>(),
         ) { response ->
             lastPage = response.last
             if (currentPage == 1) {
-                manageDisposable(Commit.save(response.items!!, repoId!!, login!!, number))
+                manageObservable(
+                    CommitDao.save(response.items!!, repoId!!, login!!, number).toObservable()
+                )
             }
             sendToView { view ->
                 view?.onNotifyAdapter(
@@ -75,7 +78,7 @@ class PullRequestCommitsPresenter : BasePresenter<PullRequestCommitsMvp.View>(),
     override fun onWorkOffline() {
         if (commits.isEmpty()) {
             manageDisposable(RxHelper.getSingle(
-                Commit.getCommits(
+                CommitDao.getCommits(
                     repoId!!, login!!, number
                 )
             )

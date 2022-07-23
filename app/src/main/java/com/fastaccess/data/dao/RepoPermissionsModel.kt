@@ -11,7 +11,7 @@ open class RepoPermissionsModel : Parcelable {
     var push = false
     var pull = false
 
-    constructor() {}
+    constructor()
 
     override fun describeContents(): Int {
         return 0

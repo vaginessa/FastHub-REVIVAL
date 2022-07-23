@@ -4,7 +4,7 @@ package com.fastaccess.ui.adapter.viewholder
 import android.view.View
 import android.view.ViewGroup
 import com.fastaccess.R
-import com.fastaccess.data.dao.model.GitHubPackage
+import com.fastaccess.data.entity.GitHubPackage
 import com.fastaccess.helper.ParseDateFormat.Companion.getTimeAgo
 import com.fastaccess.ui.adapter.PackagesAdapter
 import com.fastaccess.ui.base.adapter.BaseViewHolder

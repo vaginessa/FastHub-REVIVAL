@@ -5,11 +5,10 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.view.MenuItem
-import com.annimon.stream.Objects
 import com.evernote.android.state.State
 import com.fastaccess.R
 import com.fastaccess.data.dao.NameParser
-import com.fastaccess.data.dao.model.AbstractRepo
+import com.fastaccess.data.entity.dao.RepoDao
 import com.fastaccess.helper.ActivityHelper
 import com.fastaccess.helper.AppHelper
 import com.fastaccess.helper.BundleConstant
@@ -59,8 +58,7 @@ class RepoFilesActivity : BaseActivity<BaseMvp.FAView, BasePresenter<BaseMvp.FAV
             login = bundle!!.getString(BundleConstant.EXTRA)
             repoId = bundle.getString(BundleConstant.ID)
             val path = bundle.getString(BundleConstant.EXTRA_TWO)
-            val defaultBranch =
-                Objects.toString(bundle.getString(BundleConstant.EXTRA_THREE), "master")
+            val defaultBranch = bundle.getString(BundleConstant.EXTRA_THREE)?: "master"
             supportFragmentManager.beginTransaction()
                 .add(
                     R.id.fragmentContainer,
@@ -136,7 +134,7 @@ class RepoFilesActivity : BaseActivity<BaseMvp.FAView, BasePresenter<BaseMvp.FAV
                     uri.pathSegments[0].equals("repositories", ignoreCase = true) -> {
                         val id = uri.pathSegments[1].toLongOrNull()
                         if (id != null && id != 0L) {
-                            val repo = AbstractRepo.getRepo(id)
+                            val repo = RepoDao.getRepo(id).blockingGet().get()
                             if (repo != null) {
                                 val nameParser = NameParser(repo.htmlUrl)
                                 if (nameParser.username != null && nameParser.name != null) {

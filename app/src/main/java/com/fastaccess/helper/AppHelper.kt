@@ -1,5 +1,6 @@
 package com.fastaccess.helper
 
+import android.annotation.SuppressLint
 import android.app.NotificationManager
 import android.content.ClipData
 import android.content.ClipboardManager
@@ -161,12 +162,16 @@ object AppHelper {
                 || "google_sdk" == Build.PRODUCT)
 
     private fun isInstalledFromPlaySore(context: Context): Boolean {
-        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-            val sourceInfo = context.packageManager.getInstallSourceInfo(BuildConfig.GITHUB_APP_ID)
-            return !isEmpty(sourceInfo.installingPackageName)
-        } else {
-            val ipn = context.packageManager.getInstallerPackageName(BuildConfig.GITHUB_APP_ID)
+        return try {
+            val ipn: String? = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+                val sourceInfo = context.packageManager.getInstallSourceInfo(BuildConfig.GITHUB_APP_ID)
+                sourceInfo.installingPackageName
+            } else {
+                context.packageManager.getInstallerPackageName(BuildConfig.GITHUB_APP_ID)
+            }
             !isEmpty(ipn)
+        } catch (e: PackageManager.NameNotFoundException) {
+            false
         }
     }
 
@@ -196,6 +201,7 @@ object AppHelper {
     }
 
     val isDataPlan: Boolean
+        @SuppressLint("MissingPermission")
         get() {
             val connectivityManager = App.getInstance()
                 .getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager

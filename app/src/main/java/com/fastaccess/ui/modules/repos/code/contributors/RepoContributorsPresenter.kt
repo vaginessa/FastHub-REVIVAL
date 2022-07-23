@@ -4,7 +4,7 @@ import android.os.Bundle
 import android.view.View
 import android.widget.PopupMenu
 import com.fastaccess.R
-import com.fastaccess.data.dao.model.User
+import com.fastaccess.data.entity.User
 import com.fastaccess.helper.BundleConstant
 import com.fastaccess.helper.InputHelper.isEmpty
 import com.fastaccess.provider.rest.RestProvider.getRepoService

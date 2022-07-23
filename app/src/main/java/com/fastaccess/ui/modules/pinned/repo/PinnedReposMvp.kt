@@ -1,6 +1,6 @@
 package com.fastaccess.ui.modules.pinned.repo
 
-import com.fastaccess.data.dao.model.PinnedRepos
+import com.fastaccess.data.entity.PinnedRepos
 import com.fastaccess.ui.base.adapter.BaseViewHolder
 import com.fastaccess.ui.base.mvp.BaseMvp.FAView
 

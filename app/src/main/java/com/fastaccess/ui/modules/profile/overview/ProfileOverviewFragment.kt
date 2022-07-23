@@ -14,8 +14,8 @@ import androidx.transition.Transition
 import androidx.transition.TransitionManager
 import com.evernote.android.state.State
 import com.fastaccess.R
-import com.fastaccess.data.dao.model.Login
-import com.fastaccess.data.dao.model.User
+import com.fastaccess.data.entity.User
+import com.fastaccess.data.entity.dao.LoginDao
 import com.fastaccess.github.GetPinnedReposQuery
 import com.fastaccess.helper.*
 import com.fastaccess.provider.crash.Report
@@ -88,7 +88,7 @@ class ProfileOverviewFragment : BaseFragment<ProfileOverviewMvp.View, ProfileOve
     fun onOpenAvatar() {
         if (userModel != null) ActivityHelper.startCustomTab(
             requireActivity(),
-            userModel!!.avatarUrl
+            userModel!!.avatarUrl!!
         )
     }
 
@@ -182,7 +182,7 @@ class ProfileOverviewFragment : BaseFragment<ProfileOverviewMvp.View, ProfileOve
             fullname.text = userModel.name
         }
         if (userModel.bio != null) {
-            description.text = EmojiParser.parseToUnicode(userModel.bio)
+            description.text = EmojiParser.parseToUnicode(userModel.bio!!)
         } else {
             description.visibility = View.GONE
         }
@@ -195,7 +195,7 @@ class ProfileOverviewFragment : BaseFragment<ProfileOverviewMvp.View, ProfileOve
         avatarLayout.findViewById<View>(R.id.avatar)
             .setOnTouchListener { _: View?, event: MotionEvent ->
                 if (event.action == MotionEvent.ACTION_UP) {
-                    ActivityHelper.startCustomTab(requireActivity(), userModel.avatarUrl)
+                    ActivityHelper.startCustomTab(requireActivity(), userModel.avatarUrl!!)
                     return@setOnTouchListener true
                 }
                 false
@@ -344,14 +344,17 @@ class ProfileOverviewFragment : BaseFragment<ProfileOverviewMvp.View, ProfileOve
     }
 
     private val isMeOrOrganization: Boolean
-        get() = Login.getUser() != null && Login.getUser().login.equals(
-            presenter!!.login,
-            ignoreCase = true
-        ) ||
-                userModel != null && userModel!!.type != null && !userModel!!.type.equals(
-            "user",
-            ignoreCase = true
-        )
+        get() {
+            val login = LoginDao.getUser().blockingGet().get()
+            return login != null && login.login.equals(
+                presenter!!.login,
+                ignoreCase = true
+            ) ||
+                    userModel != null && userModel!!.type != null && !userModel!!.type.equals(
+                "user",
+                ignoreCase = true
+            )
+        }
 
     companion object {
         @JvmStatic

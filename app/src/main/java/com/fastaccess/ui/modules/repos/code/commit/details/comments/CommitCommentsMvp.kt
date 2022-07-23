@@ -3,9 +3,9 @@ package com.fastaccess.ui.modules.repos.code.commit.details.comments
 import android.os.Bundle
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout.OnRefreshListener
 import com.fastaccess.data.dao.TimelineModel
-import com.fastaccess.data.dao.model.Comment
-import com.fastaccess.data.dao.model.User
 import com.fastaccess.data.dao.types.ReactionTypes
+import com.fastaccess.data.entity.Comment
+import com.fastaccess.data.entity.User
 import com.fastaccess.provider.rest.loadmore.OnLoadMore
 import com.fastaccess.ui.adapter.callback.OnToggleView
 import com.fastaccess.ui.adapter.callback.ReactionsCallback
